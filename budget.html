@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget Planner - Budget Master</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.app {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px 16px 120px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.balance-box {
+  background: #1e293b;
+  padding: 18px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.balance-box label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+  color: #94a3b8;
+}
+
+.balance-box input {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 17px;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.balance-box input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.notification {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ok {
+  background: rgba(46,204,113,0.15);
+  color: #22c55e;
+}
+
+.warning {
+  background: rgba(255,107,107,0.15);
+  color: #ef4444;
+}
+
+.category-field {
+  background: #1e293b;
+  padding: 18px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.category-field label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+  color: #94a3b8;
+}
+
+.category-field select,
+.category-field input {
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 15px;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.category-field select:focus,
+.category-field input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.calculation-box {
+  background: #1e293b;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.calculation-box label {
+  font-size: 16px;
+  margin-bottom: 14px;
+  display: block;
+  font-weight: 600;
+}
+
+.calc-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.calc-row input[type="text"] {
+  flex: 2;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.calc-row input[type="number"] {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 12px;
+  color: #fff;
+  font-size: 14px;
+}
+
+.calc-row input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.calc-row input::placeholder {
+  color: #64748b;
+}
+
+.remove-btn {
+  background: #ef4444;
+  border: none;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.remove-btn:hover {
+  background: #dc2626;
+}
+
+.add-btn {
+  width: 100%;
+  background: linear-gradient(90deg,#22c55e,#3b82f6);
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+.save-btn {
+  width: 100%;
+  background: #3b82f6;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
+}
+
+.total-box {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px dashed #334155;
+}
+
+.total-label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.total-amount {
+  font-size: 22px;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: #020617;
+  display: flex;
+  gap: 8px;
+  padding: 12px 12px 18px;
+  border-top: 1px solid #1e293b;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: #1e293b;
+  text-align: center;
+  font-size: 13px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.tab.active {
+  background: linear-gradient(90deg,#22c55e,#3b82f6);
+  font-weight: bold;
+}
+
+.success-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #22c55e;
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  display: none;
+}
+
+.success-message.show {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 520px) {
+  .calc-row {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="successMessage" class="success-message">
+  <i class="fas fa-check-circle"></i> Budget saved successfully!
+</div>
+
+<div class="app">
+  <div class="header">
+    <h1><i class="fa-solid fa-wallet"></i> Budget Planner</h1>
+  </div>
+  <div class="subtitle">Smart expense tracking with real-time balance control</div>
+
+  <div class="category-field">
+    <label for="category">Category</label>
+    <select id="category" onchange="handleCategoryChange()">
+      <option value="">Select category</option>
+      <option value="Food">Food</option>
+      <option value="Transport">Transport</option>
+      <option value="Rent">Rent</option>
+      <option value="Utilities">Utilities</option>
+      <option value="Entertainment">Entertainment</option>
+      <option value="Education">Education</option>
+      <option value="Healthcare">Healthcare</option>
+      <option value="House Construction">House Construction</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <input
+      type="text"
+      id="customCategory"
+      placeholder="Write your category"
+      style="display:none; margin-top:10px;"
+    >
+  </div>
+
+  <div class="balance-box">
+    <label>Budget Limit for this Category</label>
+    <input type="number" id="budgetLimit" placeholder="Enter budget limit (MWK)" oninput="updateStatus()">
+
+    <div id="notification" class="notification ok">
+      <i class="fa-solid fa-circle-check"></i>
+      Set your budget limit above
+    </div>
+  </div>
+
+  <div class="calculation-box">
+    <label>Expenses</label>
+
+    <div id="items">
+      <div class="calc-row">
+        <input type="text" class="item-name" placeholder="Product / Item">
+        <input type="number" class="item-amount" placeholder="Amount" oninput="calculateTotal()">
+        <button class="remove-btn" onclick="removeRow(this)">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <button class="add-btn" onclick="addRow()">
+      <i class="fa-solid fa-plus"></i> Add Expense
+    </button>
+
+    <div class="total-box">
+      <div class="total-label">Total Expenses</div>
+      <div class="total-amount" id="total">0.00</div>
+    </div>
+
+    <button class="save-btn" onclick="saveToOverview()">
+      <i class="fa-solid fa-save"></i> Add to Overview (Homepage)
+    </button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('transaction')">Add Transaction</div>
+  <div class="tab active" onclick="switchTab('budget')">Budgets</div>
+</div>
+
+<script>
+function handleCategoryChange() {
+  const category = document.getElementById("category");
+  const customInput = document.getElementById("customCategory");
+
+  if (category.value === "Other") {
+    customInput.style.display = "block";
+    customInput.focus();
+  } else {
+    customInput.style.display = "none";
+    customInput.value = "";
+  }
+}
+
+function addRow() {
+  const items = document.getElementById("items");
+  const row = document.createElement("div");
+  row.className = "calc-row";
+  row.innerHTML = `
+    <input type="text" class="item-name" placeholder="Product / Item">
+    <input type="number" class="item-amount" placeholder="Amount" oninput="calculateTotal()">
+    <button class="remove-btn" onclick="removeRow(this)">
+      <i class="fa-solid fa-trash"></i>
+    </button>
+  `;
+  items.appendChild(row);
+}
+
+function removeRow(btn) {
+  btn.parentElement.remove();
+  calculateTotal();
+}
+
+function calculateTotal() {
+  let total = 0;
+  document.querySelectorAll('.item-amount').forEach(i => {
+    total += Number(i.value) || 0;
+  });
+  document.getElementById("total").innerText = total.toFixed(2);
+  updateStatus();
+}
+
+function updateStatus() {
+  const budgetLimit = Number(document.getElementById("budgetLimit").value) || 0;
+  const total = Number(document.getElementById("total").innerText) || 0;
+  const note = document.getElementById("notification");
+
+  if (budgetLimit === 0) {
+    note.className = "notification ok";
+    note.innerHTML = `
+      <i class="fa-solid fa-circle-check"></i>
+      Set your budget limit above
+    `;
+    return;
+  }
+
+  if (total > budgetLimit) {
+    note.className = "notification warning";
+    note.innerHTML = `
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      Expenses exceed budget limit!
+    `;
+  } else {
+    note.className = "notification ok";
+    note.innerHTML = `
+      <i class="fa-solid fa-circle-check"></i>
+      Remaining budget: MWK ${(budgetLimit - total).toFixed(2)}
+    `;
+  }
+}
+
+function saveToOverview() {
+  const categorySelect = document.getElementById("category");
+  const customCategory = document.getElementById("customCategory");
+  const budgetLimit = Number(document.getElementById("budgetLimit").value) || 0;
+  const total = Number(document.getElementById("total").innerText) || 0;
+  
+  // Get category name
+  let categoryName = categorySelect.value;
+  if (categoryName === "Other" && customCategory.value.trim()) {
+    categoryName = customCategory.value.trim();
+  }
+
+  // Validation
+  if (!categoryName || categoryName === "") {
+    alert("Please select or enter a category");
+    return;
+  }
+
+  if (budgetLimit === 0) {
+    alert("Please set a budget limit");
+    return;
+  }
+
+  if (total === 0) {
+    alert("Please add at least one expense item");
+    return;
+  }
+
+  // Get all items
+  const items = [];
+  const itemRows = document.querySelectorAll('.calc-row');
+  itemRows.forEach(row => {
+    const name = row.querySelector('.item-name').value.trim();
+    const amount = Number(row.querySelector('.item-amount').value) || 0;
+    if (name && amount > 0) {
+      items.push({ name, amount });
+    }
+  });
+
+  if (items.length === 0) {
+    alert("Please add at least one valid expense item");
+    return;
+  }
+
+  // Load existing budgets
+  const budgets = JSON.parse(localStorage.getItem('categoryBudgets') || '{}');
+  
+  // Update or create category budget
+  if (budgets[categoryName]) {
+    budgets[categoryName].spent += total;
+    budgets[categoryName].items = budgets[categoryName].items.concat(items);
+  } else {
+    budgets[categoryName] = {
+      budget: budgetLimit,
+      spent: total,
+      items: items
+    };
+  }
+
+  // Save to localStorage
+  localStorage.setItem('categoryBudgets', JSON.stringify(budgets));
+
+  // Show success message
+  const successMsg = document.getElementById('successMessage');
+  successMsg.classList.add('show');
+  setTimeout(() => {
+    successMsg.classList.remove('show');
+  }, 2000);
+
+  // Reset form after 2 seconds
+  setTimeout(() => {
+    document.getElementById("category").value = "";
+    document.getElementById("customCategory").value = "";
+    document.getElementById("customCategory").style.display = "none";
+    document.getElementById("budgetLimit").value = "";
+    document.getElementById("items").innerHTML = `
+      <div class="calc-row">
+        <input type="text" class="item-name" placeholder="Product / Item">
+        <input type="number" class="item-amount" placeholder="Amount" oninput="calculateTotal()">
+        <button class="remove-btn" onclick="removeRow(this)">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    `;
+    document.getElementById("total").innerText = "0.00";
+    updateStatus();
+  }, 2000);
+}
+
+function switchTab(tab) {
+  if (tab === 'overview') window.location.href = 'index.html';
+  if (tab === 'transaction') window.location.href = 'add-transaction.html';
+  if (tab === 'budget') return;
+}
+</script>
+
+</body>
+</html>
