@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Goals & Savings - Budget Master</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .app {
+      max-width: 420px;
+      margin: auto;
+      padding: 20px 16px 120px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .new-badge {
+      background: linear-gradient(90deg,#22c55e,#3b82f6);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: linear-gradient(135deg, #1e293b, #334155);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+      padding-top: 12px;
+      border-top: 1px dashed #475569;
+      font-weight: bold;
+    }
+
+    .summary-value {
+      color: #22c55e;
+      font-weight: 600;
+    }
+
+    .goal-card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid #334155;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .goal-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #22c55e, #3b82f6);
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .goal-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 4px 0;
+    }
+
+    .goal-amount {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .goal-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: #334155;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .icon-btn:hover {
+      background: #475569;
+    }
+
+    .progress-section {
+      margin-bottom: 12px;
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: #0f172a;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .daily-target {
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .daily-target-title {
+      font-size: 13px;
+      color: #22c55e;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .daily-target-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .daily-target-item {
+      font-size: 12px;
+    }
+
+    .daily-target-label {
+      color: #94a3b8;
+    }
+
+    .daily-target-value {
+      color: #22c55e;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .status-on-track {
+      background: rgba(34,197,94,0.2);
+      color: #22c55e;
+    }
+
+    .status-behind {
+      background: rgba(239,68,68,0.2);
+      color: #ef4444;
+    }
+
+    .status-ahead {
+      background: rgba(59,130,246,0.2);
+      color: #3b82f6;
+    }
+
+    .add-goal-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg,#22c55e,#3b82f6);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .add-goal-btn:active {
+      opacity: 0.8;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+
+    .empty-state i {
+      font-size: 60px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 380px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .modal-header i {
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(90deg,#22c55e,#3b82f6);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-submit:active {
+      opacity: 0.8;
+    }
+
+    .tabs {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      background: #020617;
+      display: flex;
+      gap: 8px;
+      padding: 12px 12px 18px;
+      border-top: 1px solid #1e293b;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 8px;
+      border-radius: 12px;
+      background: #1e293b;
+      text-align: center;
+      font-size: 13px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .tab.active {
+      background: linear-gradient(90deg,#22c55e,#3b82f6);
+      font-weight: bold;
+    }
+
+    .notification-banner {
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: start;
+      gap: 12px;
+    }
+
+    .notification-banner i {
+      color: #ef4444;
+      font-size: 20px;
+      margin-top: 2px;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      color: #ef4444;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .notification-text {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>
+      <i class="fas fa-bullseye"></i>
+      Goals & Savings
+      <span class="new-badge">NEW</span>
+    </h1>
+  </div>
+  <div class="subtitle">Track your financial goals and savings progress</div>
+
+  <div id="notificationArea"></div>
+
+  <div id="summaryCard" style="display:none;">
+    <div class="summary-card">
+      <div class="summary-row">
+        <span>Active Goals:</span>
+        <span class="summary-value" id="activeGoalsCount">0</span>
+      </div>
+      <div class="summary-row">
+        <span>Total Target:</span>
+        <span class="summary-value" id="totalTarget">MWK 0</span>
+      </div>
+      <div class="summary-row">
+        <span>Total Saved:</span>
+        <span class="summary-value" id="totalSaved">MWK 0</span>
+      </div>
+      <div class="summary-row">
+        <span>Remaining:</span>
+        <span class="summary-value" id="totalRemaining">MWK 0</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="add-goal-btn" onclick="showAddGoalModal()">
+    <i class="fas fa-plus-circle"></i> Create New Savings Goal
+  </button>
+
+  <div id="goalsContainer">
+    <div class="empty-state">
+      <i class="fas fa-piggy-bank"></i>
+      <h3>No Savings Goals Yet</h3>
+      <p>Create your first savings goal to start tracking your financial progress!</p>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('transaction')">Add Transaction</div>
+  <div class="tab" onclick="switchTab('budget')">Budgets</div>
+  <div class="tab active" onclick="switchTab('goals')">Goals</div>
+</div>
+
+<!-- Add Goal Modal -->
+<div class="modal" id="addGoalModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Create Savings Goal</h3>
+      <i class="fas fa-times" onclick="closeAddGoalModal()"></i>
+    </div>
+
+    <form id="goalForm" onsubmit="saveGoal(event)">
+      <div class="form-group">
+        <label>Goal Name</label>
+        <input type="text" id="goalName" placeholder="e.g., Emergency Fund" required>
+      </div>
+
+      <div class="form-group">
+        <label>Target Amount (MWK)</label>
+        <input type="number" id="targetAmount" placeholder="500000" required>
+      </div>
+
+      <div class="form-group">
+        <label>Current Savings (MWK)</label>
+        <input type="number" id="currentSavings" placeholder="0" value="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>Target Date</label>
+        <input type="date" id="targetDate" required>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select id="goalCategory">
+          <option value="Emergency Fund">Emergency Fund</option>
+          <option value="Education">Education</option>
+          <option value="Travel">Travel</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Housing">Housing</option>
+          <option value="Vehicle">Vehicle</option>
+          <option value="Wedding">Wedding</option>
+          <option value="Business">Business</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-check"></i> Create Goal
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Add Savings Modal -->
+<div class="modal" id="addSavingsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Add Savings</h3>
+      <i class="fas fa-times" onclick="closeAddSavingsModal()"></i>
+    </div>
+
+    <form id="savingsForm" onsubmit="addSavings(event)">
+      <input type="hidden" id="savingsGoalId">
+      
+      <div class="form-group">
+        <label>Amount to Add (MWK)</label>
+        <input type="number" id="savingsAmount" placeholder="10000" required>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-plus"></i> Add Savings
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+let goals = [];
+
+function loadGoals() {
+  const saved = localStorage.getItem('savingsGoals');
+  if (saved) {
+    goals = JSON.parse(saved);
+  }
+  displayGoals();
+  updateSummary();
+  checkNotifications();
+}
+
+function saveGoals() {
+  localStorage.setItem('savingsGoals', JSON.stringify(goals));
+}
+
+function displayGoals() {
+  const container = document.getElementById('goalsContainer');
+  
+  if (goals.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i class="fas fa-piggy-bank"></i>
+        <h3>No Savings Goals Yet</h3>
+        <p>Create your first savings goal to start tracking your financial progress!</p>
+      </div>
+    `;
+    document.getElementById('summaryCard').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('summaryCard').style.display = 'block';
+  
+  let html = '';
+  goals.forEach((goal, index) => {
+    const progress = (goal.current / goal.target) * 100;
+    const remaining = goal.target - goal.current;
+    
+    // Calculate days remaining
+    const today = new Date();
+    const targetDate = new Date(goal.targetDate);
+    const daysRemaining = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+    
+    // Calculate daily/weekly targets
+    const dailyTarget = daysRemaining > 0 ? remaining / daysRemaining : 0;
+    const weeklyTarget = dailyTarget * 7;
+    const monthlyTarget = dailyTarget * 30;
+    
+    // Determine status
+    let status = 'on-track';
+    let statusText = 'On Track';
+    
+    if (progress >= 100) {
+      status = 'ahead';
+      statusText = 'Goal Achieved! 🎉';
+    } else if (daysRemaining < 0) {
+      status = 'behind';
+      statusText = 'Overdue';
+    } else if (daysRemaining < 30 && progress < 70) {
+      status = 'behind';
+      statusText = 'Behind Schedule';
+    } else if (progress > 80) {
+      status = 'ahead';
+      statusText = 'Ahead of Schedule';
+    }
+    
+    html += `
+      <div class="goal-card">
+        <div class="goal-header">
+          <div>
+            <h3 class="goal-title">${goal.name}</h3>
+            <div class="goal-amount">${goal.category}</div>
+          </div>
+          <div class="goal-actions">
+            <button class="icon-btn" onclick="showAddSavingsModal(${index})" title="Add Savings">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button class="icon-btn" onclick="deleteGoal(${index})" title="Delete Goal">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${Math.min(progress, 100)}%"></div>
+          </div>
+          <div class="progress-text">
+            <span>MWK ${goal.current.toLocaleString()} / ${goal.target.toLocaleString()}</span>
+            <span>${Math.round(progress)}%</span>
+          </div>
+        </div>
+
+        <div class="daily-target">
+          <div class="daily-target-title">
+            <i class="fas fa-calendar-check"></i> To reach your goal:
+          </div>
+          <div class="daily-target-grid">
+            <div class="daily-target-item">
+              <div class="daily-target-label">Per Day:</div>
+              <div class="daily-target-value">MWK ${dailyTarget.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+            <div class="daily-target-item">
+              <div class="daily-target-label">Per Week:</div>
+              <div class="daily-target-value">MWK ${weeklyTarget.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+            <div class="daily-target-item">
+              <div class="daily-target-label">Per Month:</div>
+              <div class="daily-target-value">MWK ${monthlyTarget.toLocaleString(undefined, {maximumFractionDigits: 0})}</div>
+            </div>
+            <div class="daily-target-item">
+              <div class="daily-target-label">Days Left:</div>
+              <div class="daily-target-value">${daysRemaining > 0 ? daysRemaining : 0} days</div>
+            </div>
+          </div>
+        </div>
+
+        <span class="status-badge status-${status}">${statusText}</span>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function updateSummary() {
+  if (goals.length === 0) return;
+  
+  const totalTarget = goals.reduce((sum, g) => sum + g.target, 0);
+  const totalCurrent = goals.reduce((sum, g) => sum + g.current, 0);
+  const remaining = totalTarget - totalCurrent;
+  
+  document.getElementById('activeGoalsCount').textContent = goals.length;
+  document.getElementById('totalTarget').textContent = `MWK ${totalTarget.toLocaleString()}`;
+  document.getElementById('totalSaved').textContent = `MWK ${totalCurrent.toLocaleString()}`;
+  document.getElementById('totalRemaining').textContent = `MWK ${remaining.toLocaleString()}`;
+}
+
+function checkNotifications() {
+  const notificationArea = document.getElementById('notificationArea');
+  let notifications = [];
+  
+  const today = new Date();
+  
+  goals.forEach(goal => {
+    const targetDate = new Date(goal.targetDate);
+    const daysRemaining = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+    const progress = (goal.current / goal.target) * 100;
+    
+    // Check for overdue goals
+    if (daysRemaining < 0 && progress < 100) {
+      notifications.push({
+        title: `${goal.name} is Overdue!`,
+        text: `You're MWK ${(goal.target - goal.current).toLocaleString()} away from your goal.`
+      });
+    }
+    // Check for goals nearing deadline
+    else if (daysRemaining <= 7 && daysRemaining > 0 && progress < 90) {
+      notifications.push({
+        title: `${goal.name} deadline approaching!`,
+        text: `Only ${daysRemaining} days left. Save MWK ${((goal.target - goal.current) / daysRemaining).toLocaleString(undefined, {maximumFractionDigits: 0})} daily.`
+      });
+    }
+    // Check for behind schedule
+    else if (daysRemaining > 0 && progress < 50 && daysRemaining < 30) {
+      notifications.push({
+        title: `${goal.name} needs attention!`,
+        text: `You're behind schedule. Increase daily savings to stay on track.`
+      });
+    }
+  });
+  
+  if (notifications.length > 0) {
+    notificationArea.innerHTML = notifications.map(n => `
+      <div class="notification-banner">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="notification-content">
+          <div class="notification-title">${n.title}</div>
+          <div class="notification-text">${n.text}</div>
+        </div>
+      </div>
+    `).join('');
+  } else {
+    notificationArea.innerHTML = '';
+  }
+}
+
+function showAddGoalModal() {
+  document.getElementById('addGoalModal').classList.add('show');
+  document.getElementById('goalForm').reset();
+  
+  // Set default target date to 3 months from now
+  const defaultDate = new Date();
+  defaultDate.setMonth(defaultDate.getMonth() + 3);
+  document.getElementById('targetDate').valueAsDate = defaultDate;
+}
+
+function closeAddGoalModal() {
+  document.getElementById('addGoalModal').classList.remove('show');
+}
+
+function saveGoal(event) {
+  event.preventDefault();
+  
+  const goal = {
+    id: Date.now(),
+    name: document.getElementById('goalName').value,
+    target: parseFloat(document.getElementById('targetAmount').value),
+    current: parseFloat(document.getElementById('currentSavings').value),
+    targetDate: document.getElementById('targetDate').value,
+    category: document.getElementById('goalCategory').value,
+    createdAt: new Date().toISOString()
+  };
+  
+  goals.push(goal);
+  saveGoals();
+  displayGoals();
+  updateSummary();
+  checkNotifications();
+  closeAddGoalModal();
+  
+  alert('Savings goal created successfully! 🎉');
+}
+
+function showAddSavingsModal(index) {
+  document.getElementById('savingsGoalId').value = index;
+  document.getElementById('addSavingsModal').classList.add('show');
+  document.getElementById('savingsForm').reset();
+}
+
+function closeAddSavingsModal() {
+  document.getElementById('addSavingsModal').classList.remove('show');
+}
+
+function addSavings(event) {
+  event.preventDefault();
+  
+  const index = parseInt(document.getElementById('savingsGoalId').value);
+  const amount = parseFloat(document.getElementById('savingsAmount').value);
+  
+  goals[index].current += amount;
+  
+  saveGoals();
+  displayGoals();
+  updateSummary();
+  checkNotifications();
+  closeAddSavingsModal();
+  
+  alert(`MWK ${amount.toLocaleString()} added to ${goals[index].name}! 💰`);
+}
+
+function deleteGoal(index) {
+  if (confirm(`Are you sure you want to delete "${goals[index].name}"?`)) {
+    goals.splice(index, 1);
+    saveGoals();
+    displayGoals();
+    updateSummary();
+    checkNotifications();
+  }
+}
+
+function switchTab(tab) {
+  if (tab === 'overview') window.location.href = 'index.html';
+  if (tab === 'transaction') window.location.href = 'add-transaction.html';
+  if (tab === 'budget') window.location.href = 'budget.html';
+  if (tab === 'goals') return;
+}
+
+// Close modals when clicking outside
+document.addEventListener('click', function(e) {
+  const addGoalModal = document.getElementById('addGoalModal');
+  const addSavingsModal = document.getElementById('addSavingsModal');
+  
+  if (e.target === addGoalModal) {
+    closeAddGoalModal();
+  }
+  if (e.target === addSavingsModal) {
+    closeAddSavingsModal();
+  }
+});
+
+// Load goals on page load
+window.addEventListener('DOMContentLoaded', loadGoals);
+</script>
+
+</body>
+</html>
