@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Transaction - Budget Master</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.app {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px 16px 120px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.auto-input-container {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auto-input-container h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+}
+
+.camera-icon {
+  font-size: 50px;
+  margin: 15px 0;
+}
+
+.auto-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.auto-buttons button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.auto-buttons .capture {
+  background: #22c55e;
+  color: white;
+}
+
+.auto-buttons .capture:hover {
+  background: #16a34a;
+}
+
+.auto-buttons .upload {
+  background: #3b82f6;
+  color: white;
+}
+
+.auto-buttons .upload:hover {
+  background: #2563eb;
+}
+
+.auto-subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 10px;
+}
+
+#receiptPreview {
+  display: none;
+  margin-top: 15px;
+  max-width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+#ocrLoader {
+  display: none;
+  margin-top: 10px;
+  color: #22c55e;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.form-group {
+  background: #1e293b;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+#customCategory {
+  margin-top: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg,#22c55e,#3b82f6);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.submit-btn:active {
+  opacity: 0.8;
+}
+
+.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: #020617;
+  display: flex;
+  gap: 8px;
+  padding: 12px 12px 18px;
+  border-top: 1px solid #1e293b;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: #1e293b;
+  text-align: center;
+  font-size: 13px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.tab.active {
+  background: linear-gradient(90deg,#22c55e,#3b82f6);
+  font-weight: bold;
+}
+
+.success-msg {
+  background: #22c55e;
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>Add Transaction</h1>
+  </div>
+  <div class="subtitle">Record your income or expense</div>
+
+  <div id="successMsg" class="success-msg">
+    <i class="fas fa-check-circle"></i> Transaction added successfully!
+  </div>
+
+  <div class="auto-input-container">
+    <h3>Auto Input</h3>
+    <div class="camera-icon">📷</div>
+    <div class="auto-buttons">
+      <button type="button" class="capture" id="captureBtn">
+        <i class="fas fa-camera"></i> Capture
+      </button>
+      <button type="button" class="upload" id="uploadBtn">
+        <i class="fas fa-upload"></i> Upload
+      </button>
+    </div>
+    <div class="auto-subtitle">Capture or upload receipt to auto-fill transaction</div>
+    <input type="file" accept="image/*" id="cameraInput" style="display:none" capture="environment">
+    <input type="file" accept="image/*" id="uploadInput" style="display:none">
+    <img id="receiptPreview" src="" alt="Receipt Preview">
+    <div id="ocrLoader">
+      <i class="fas fa-spinner fa-spin"></i> Analyzing receipt...
+    </div>
+  </div>
+
+  <form id="transactionForm">
+    <div class="form-group">
+      <label for="type">Transaction Type</label>
+      <select id="type" name="type" required>
+        <option value="" disabled selected>Select type</option>
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="amount">Amount (MWK)</label>
+      <input type="number" id="amount" name="amount" placeholder="Enter amount" step="0.01" required>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" name="category" onchange="handleCategoryChange()" required>
+        <option value="">Select category</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Fees">Fees</option>
+        <option value="Rent">Rent</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Education">Education</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Other">Other</option>
+      </select>
+      <input
+        type="text"
+        id="customCategory"
+        placeholder="Write your category"
+        style="display:none;"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <input type="text" id="description" name="description" placeholder="Enter description" required>
+    </div>
+
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input type="date" id="date" name="date" required>
+    </div>
+
+    <div class="form-group">
+      <label for="account">Account</label>
+      <select id="account" name="account" required>
+        <option value="">Select account</option>
+        <option value="Manual">Manual</option>
+        <option value="TNM Mpamba">TNM Mpamba</option>
+        <option value="Airtel Money">Airtel Money</option>
+        <option value="Bank Account">Bank Account</option>
+      </select>
+    </div>
+
+    <button type="submit" class="submit-btn">
+      <i class="fas fa-plus-circle"></i> Add Transaction
+    </button>
+  </form>
+</div>
+
+<div class="tabs">
+  <div class="tab" onclick="switchTab('overview')">Overview</div>
+  <div class="tab active" onclick="switchTab('transaction')">Add Transaction</div>
+  <div class="tab" onclick="switchTab('budget')">Budgets</div>
+</div>
+
+<script>
+const OCR_API_KEY = "K87441800188957";
+const captureBtn = document.getElementById('captureBtn');
+const uploadBtn = document.getElementById('uploadBtn');
+const cameraInput = document.getElementById('cameraInput');
+const uploadInput = document.getElementById('uploadInput');
+const receiptPreview = document.getElementById('receiptPreview');
+const ocrLoader = document.getElementById('ocrLoader');
+
+captureBtn.addEventListener('click', () => cameraInput.click());
+uploadBtn.addEventListener('click', () => uploadInput.click());
+cameraInput.addEventListener('change', handleFile);
+uploadInput.addEventListener('change', handleFile);
+
+function handleFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+  reader.onload = ev => {
+    receiptPreview.src = ev.target.result;
+    receiptPreview.style.display = 'block';
+  }
+  reader.readAsDataURL(file);
+
+  ocrLoader.style.display = 'block';
+
+  const formData = new FormData();
+  formData.append('apikey', OCR_API_KEY);
+  formData.append('language','eng');
+  formData.append('isOverlayRequired','false');
+  formData.append('file', file);
+
+  fetch('https://api.ocr.space/parse/image', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    ocrLoader.style.display = 'none';
+    if(data.IsErroredOnProcessing){
+      alert('OCR failed: ' + data.ErrorMessage[0]);
+      return;
+    }
+
+    const parsedText = data.ParsedResults[0].ParsedText;
+    console.log('OCR Result:', parsedText);
+
+    const amounts = parsedText.match(/\d+[.,]?\d*/g)?.map(a=>parseFloat(a.replace(',','.')));
+    if(amounts?.length) document.getElementById('amount').value = Math.max(...amounts).toFixed(2);
+
+    const dateRegex = /(\d{4}-\d{2}-\d{2})|(\d{2}[\/-]\d{2}[\/-]\d{4})/g;
+    const dates = parsedText.match(dateRegex);
+    if(dates?.length){
+      let dateVal = dates[0].replace(/\//g,'-');
+      if(dateVal.indexOf('-')===2){
+        const parts = dateVal.split('-');
+        dateVal = `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      document.getElementById('date').value = dateVal;
+    }
+
+    const lines = parsedText.split('\n').filter(l=>l.trim().length>0);
+    document.getElementById('description').value = lines[0] || 'Receipt transaction';
+
+    const categories = ['Food','Transport','Entertainment','Fees','Rent'];
+    let foundCat = categories.find(cat => parsedText.toLowerCase().includes(cat.toLowerCase()));
+    if(foundCat) {
+      document.getElementById('category').value = foundCat;
+    }
+
+    const lowerText = parsedText.toLowerCase();
+    document.getElementById('type').value = (/paid|purchase|total|spent/.test(lowerText)) ? 'expense' : 'income';
+  })
+  .catch(err => {
+    ocrLoader.style.display = 'none';
+    console.error(err);
+    alert('Failed to read receipt.');
+  });
+}
+
+function handleCategoryChange() {
+  const category = document.getElementById("category");
+  const customInput = document.getElementById("customCategory");
+
+  if (category.value === "Other") {
+    customInput.style.display = "block";
+    customInput.focus();
+  } else {
+    customInput.style.display = "none";
+    customInput.value = "";
+  }
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const suffix = day === 1 || day === 21 || day === 31 ? 'st' : 
+                 day === 2 || day === 22 ? 'nd' : 
+                 day === 3 || day === 23 ? 'rd' : 'th';
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                  'July', 'August', 'September', 'October', 'November', 'December'];
+  return `${day}${suffix} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+const form = document.getElementById('transactionForm');
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  
+  const categoryValue = document.getElementById('category').value === 'Other' 
+    ? document.getElementById('customCategory').value 
+    : document.getElementById('category').value;
+
+  const type = form.type.value;
+  const amount = parseFloat(form.amount.value);
+  const formattedDate = formatDate(form.date.value);
+
+  const transaction = {
+    id: Date.now(),
+    type: type,
+    amount: amount,
+    category: categoryValue,
+    description: form.description.value,
+    date: formattedDate,
+    account: form.account.value
+  };
+  
+  // Load existing transactions
+  let transactions = JSON.parse(localStorage.getItem('transactions') || '{"income":[],"expense":[]}');
+  
+  // Add new transaction to the beginning of the appropriate array
+  if (type === 'income') {
+    transactions.income.unshift(transaction);
+  } else {
+    transactions.expense.unshift(transaction);
+  }
+  
+  // Save back to localStorage
+  localStorage.setItem('transactions', JSON.stringify(transactions));
+  
+  // Update category budgets if it's an expense
+  if (type === 'expense') {
+    const budgets = JSON.parse(localStorage.getItem('categoryBudgets') || '{}');
+    if (budgets[categoryValue]) {
+      budgets[categoryValue].spent += amount;
+      budgets[categoryValue].items = budgets[categoryValue].items || [];
+      budgets[categoryValue].items.push({
+        name: form.description.value,
+        amount: amount
+      });
+      localStorage.setItem('categoryBudgets', JSON.stringify(budgets));
+    }
+  }
+  
+  console.log('Transaction Added:', transaction);
+  
+  const successMsg = document.getElementById('successMsg');
+  successMsg.style.display = 'block';
+  
+  form.reset();
+  receiptPreview.style.display = 'none';
+  document.getElementById('customCategory').style.display = 'none';
+  document.getElementById('date').valueAsDate = new Date();
+  
+  setTimeout(() => {
+    successMsg.style.display = 'none';
+  }, 3000);
+});
+
+document.getElementById('date').valueAsDate = new Date();
+
+function switchTab(tab) {
+  if (tab === 'overview') window.location.href = 'index.html';
+  if (tab === 'transaction') return;
+  if (tab === 'budget') window.location.href = 'budget.html';
+}
+</script>
+
+</body>
+</html>
