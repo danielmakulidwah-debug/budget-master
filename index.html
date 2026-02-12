@@ -1,0 +1,2796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Budget Master</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track your money, control your savings. Manage income, expenses, and budgets across TNM Mpamba, Airtel Money, and bank accounts.">
+  <meta name="theme-color" content="#1e3a8a">
+  <meta name="apple-mobile-web-app-title" content="Budget Master">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    .app {
+      max-width: 420px;
+      margin: auto;
+      padding: 20px 16px 120px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .menu-btn {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .balance {
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .balance strong {
+      font-size: 18px;
+    }
+
+    .balance-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .balance-edit-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #334155;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .balance-edit-btn:hover {
+      background: #475569;
+      border-color: #475569;
+    }
+
+    .balance-updated {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .quick-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .quick-btn.update {
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      color: #fff;
+    }
+
+    .quick-btn.update:hover {
+      opacity: 0.9;
+    }
+
+    .quick-btn.ussd {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+    }
+
+    .quick-btn.ussd:hover {
+      background: #334155;
+    }
+
+    .ussd-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: start;
+    }
+
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .step-content p {
+      margin: 0;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    .ussd-dial-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #22c55e;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: 600;
+      margin-top: 10px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .ussd-dial-btn:hover {
+      background: #16a34a;
+    }
+
+    .menu-list {
+      margin-top: 10px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background: #0f172a;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .menu-item:hover {
+      background: #1e293b;
+    }
+
+    .menu-item i:first-child {
+      font-size: 20px;
+      width: 40px;
+      color: #3b82f6;
+    }
+
+    .menu-item span {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .menu-item i:last-child {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .submenu-item {
+      display: flex;
+      align-items: center;
+      padding: 14px;
+      background: #0f172a;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .submenu-item:hover {
+      background: #1e293b;
+    }
+
+    .submenu-item i {
+      font-size: 18px;
+      width: 35px;
+      color: #22c55e;
+    }
+
+    .submenu-item span {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .info-section {
+      background: #0f172a;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .info-section h4 {
+      margin: 0 0 12px 0;
+      font-size: 15px;
+      color: #3b82f6;
+    }
+
+    .info-section p {
+      margin: 0;
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    .contact-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #1e293b;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s;
+    }
+
+    .contact-btn:hover {
+      background: #334155;
+    }
+
+    .contact-btn i {
+      font-size: 18px;
+      color: #22c55e;
+    }
+
+    .developer-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: block;
+      object-fit: cover;
+      border: 4px solid transparent;
+      background: linear-gradient(#0f172a, #0f172a) padding-box,
+                  linear-gradient(135deg, #22c55e, #3b82f6) border-box;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+    }
+
+    .developer-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #3b82f6);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
+    }
+
+    .developer-avatar i {
+      font-size: 50px;
+      color: #fff;
+    }
+
+
+    .source {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .source-menu {
+      position: absolute;
+      top: 34px;
+      right: 0;
+      background: #020617;
+      border-radius: 12px;
+      min-width: 160px;
+      border: 1px solid #1e293b;
+      z-index: 20;
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      transition: 0.2s ease;
+    }
+
+    .source-menu.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .source-menu div {
+      padding: 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .source-menu div:hover {
+      background: #1e293b;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 28px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .date {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      margin-top: 18px;
+      padding: 12px;
+      background: #334155;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .budget-item {
+      margin-bottom: 18px;
+    }
+
+    .budget-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: #020617;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 10px;
+    }
+
+    .green { background: #22c55e; }
+    .yellow { background: #eab308; }
+    .red { background: #ef4444; }
+
+    .tabs {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      background: #020617;
+      display: flex;
+      gap: 8px;
+      padding: 12px 12px 18px;
+      border-top: 1px solid #1e293b;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 8px;
+      border-radius: 12px;
+      background: #1e293b;
+      text-align: center;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .tab.active {
+      background: linear-gradient(90deg,#22c55e,#3b82f6);
+      font-weight: bold;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    /* Main Menu Slide-in Style */
+    #mainMenu {
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #mainMenu.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #mainMenu .modal-content {
+      position: fixed;
+      right: -50%;
+      top: 0;
+      height: 100%;
+      width: 50%;
+      max-width: none;
+      margin: 0;
+      border-radius: 0;
+      border-top-left-radius: 24px;
+      border-bottom-left-radius: 24px;
+      overflow-y: auto;
+      transition: right 0.3s ease;
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+
+    #mainMenu.show .modal-content {
+      right: 0;
+    }
+
+    @media (max-width: 768px) {
+      #mainMenu .modal-content {
+        width: 75%;
+        right: -75%;
+      }
+    }
+
+    .modal-content {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 380px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .modal-header i {
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .back-btn {
+      cursor: pointer;
+      font-size: 20px;
+      color: #3b82f6;
+      margin-right: 12px;
+    }
+
+    .back-btn:hover {
+      color: #22c55e;
+    }
+
+    .modal-info {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    #smsInput {
+      width: 100%;
+      min-height: 120px;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 12px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn-cancel, .btn-parse {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-cancel {
+      background: #334155;
+      color: #fff;
+    }
+
+    .btn-parse {
+      background: linear-gradient(90deg,#22c55e,#3b82f6);
+      color: #fff;
+    }
+
+    #parseResult {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      display: none;
+    }
+
+    #parseResult.success {
+      background: rgba(34,197,94,0.2);
+      border: 1px solid #22c55e;
+      color: #22c55e;
+      display: block;
+    }
+
+    #parseResult.error {
+      background: rgba(239,68,68,0.2);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      display: block;
+    }
+
+    .account-select-btn {
+      flex: 1;
+      padding: 12px 8px;
+      background: #334155;
+      border: 1px solid #475569;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: 0.2s;
+    }
+
+    .account-select-btn:hover {
+      background: #475569;
+      border-color: #64748b;
+    }
+
+    .account-select-btn i {
+      font-size: 18px;
+    }
+
+    .transaction-item {
+      background: #020617;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-left: 3px solid #22c55e;
+    }
+
+    .transaction-item.expense {
+      border-left-color: #ef4444;
+    }
+
+    .transaction-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .transaction-category {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .transaction-amount {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .transaction-amount.income {
+      color: #22c55e;
+    }
+
+    .transaction-amount.expense {
+      color: #ef4444;
+    }
+
+    .transaction-date {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .transaction-account {
+      color: #64748b;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .delete-transaction-btn {
+      background: #ef4444;
+      border: none;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .delete-transaction-btn:hover {
+      background: #dc2626;
+      transform: scale(1.05);
+    }
+
+    .delete-transaction-btn:active {
+      transform: scale(0.95);
+    }
+
+    #historyContent {
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    /* Install Prompt Styles */
+    .install-prompt {
+      position: fixed;
+      bottom: -100%;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      padding: 20px;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+      z-index: 9999;
+      transition: bottom 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border-top: 2px solid #22c55e;
+    }
+
+    .install-prompt.show {
+      bottom: 0;
+    }
+
+    .install-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #64748b;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .install-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .install-content {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .install-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #22c55e, #3b82f6);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .install-text h4 {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .install-text p {
+      margin: 0;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .install-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .install-yes,
+    .install-later {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .install-yes {
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      color: #fff;
+    }
+
+    .install-yes:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .install-later {
+      background: #334155;
+      color: #fff;
+    }
+
+    .install-later:hover {
+      background: #475569;
+    }
+
+    /* Notification Banner Styles */
+    .notification-banner {
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 420px;
+      width: 90%;
+      background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+      padding: 16px 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+      z-index: 10000;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .notification-banner.show {
+      top: 20px;
+      animation: bounceIn 0.6s ease-out;
+    }
+
+    .notification-banner.hide {
+      top: -200px;
+      opacity: 0;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        transform: translateX(-50%) translateY(-100px) scale(0.9);
+        opacity: 0;
+      }
+      50% {
+        transform: translateX(-50%) translateY(10px) scale(1.05);
+      }
+      100% {
+        transform: translateX(-50%) translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .notification-icon {
+      width: 42px;
+      height: 42px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    .notification-content {
+      flex: 1;
+      color: #fff;
+    }
+
+    .notification-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin: 0 0 4px 0;
+      letter-spacing: 0.3px;
+    }
+
+    .notification-message {
+      font-size: 13px;
+      margin: 0;
+      opacity: 0.95;
+      line-height: 1.4;
+    }
+
+    .notification-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .notification-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .notification-close:active {
+      transform: rotate(90deg) scale(0.9);
+    }
+
+    /* Splash Screen Styles */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+    }
+
+    .splash-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .splash-content {
+      text-align: center;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .splash-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #22c55e 0%, #3b82f6 100%);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 20px 60px rgba(34, 197, 94, 0.3);
+      animation: scaleIn 0.6s ease-out 0.2s both;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .splash-icon i {
+      font-size: 60px;
+      color: #fff;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .splash-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #fff;
+      margin: 0 0 12px 0;
+      letter-spacing: 1px;
+      animation: fadeIn 0.8s ease-out 0.4s both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .splash-subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0 0 40px 0;
+      animation: fadeIn 0.8s ease-out 0.6s both;
+    }
+
+    .splash-loader {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #22c55e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite, fadeIn 0.8s ease-out 0.8s both;
+      margin: 0 auto 60px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .splash-footer {
+      position: absolute;
+      bottom: 30px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      animation: fadeIn 1s ease-out 1s both;
+    }
+
+    .splash-footer p {
+      margin: 0;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .splash-footer strong {
+      color: #3b82f6;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Splash Screen -->
+<div class="splash-screen" id="splashScreen">
+  <div class="splash-content">
+    <div class="splash-icon">
+      <i class="fas fa-wallet"></i>
+    </div>
+    <h1 class="splash-title">Budget Master</h1>
+    <p class="splash-subtitle">Track your money, control your savings</p>
+    <div class="splash-loader"></div>
+  </div>
+  <div class="splash-footer">
+    <p>Powered by <strong>Daniel Makulidwa</strong></p>
+  </div>
+</div>
+
+<!-- Install App Prompt -->
+<div class="install-prompt" id="installPrompt">
+  <button class="install-close" onclick="dismissInstallPrompt()">
+    <i class="fas fa-times"></i>
+  </button>
+  <div class="install-content">
+    <div class="install-icon">
+      <i class="fas fa-mobile-alt"></i>
+    </div>
+    <div class="install-text">
+      <h4>Install Budget Master</h4>
+      <p>Add to home screen for quick access & offline use</p>
+    </div>
+  </div>
+  <div class="install-buttons">
+    <button class="install-yes" onclick="installApp()">
+      <i class="fas fa-download"></i> Install
+    </button>
+    <button class="install-later" onclick="dismissInstallPrompt()">
+      Later
+    </button>
+  </div>
+</div>
+
+<!-- Notification Banner -->
+<div class="notification-banner" id="notificationBanner">
+  <div class="notification-icon">
+    <i class="fas fa-download"></i>
+  </div>
+  <div class="notification-content">
+    <p class="notification-title">Install Budget Master 📱</p>
+    <p class="notification-message">Add to your home screen to enjoy offline use and faster access!</p>
+  </div>
+  <button class="notification-close" onclick="closeNotification()">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<div class="app">
+  <div class="header">
+    <h1>Budget Master</h1>
+    <i class="fas fa-bars menu-btn" onclick="toggleMainMenu()"></i>
+  </div>
+  <div class="subtitle">Track your money, control your savings</div>
+
+  <!-- Main Menu Modal -->
+  <div class="modal" id="mainMenu">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="mainMenuTitle">Menu</h3>
+        <i class="fas fa-times" onclick="closeMainMenu()"></i>
+      </div>
+      
+      <div class="menu-list" id="menuContent">
+        <div class="menu-item" onclick="openSettings()">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="menu-item" onclick="openReports()">
+          <i class="fas fa-chart-line"></i>
+          <span>Reports & Analytics</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="menu-item" onclick="openExport()">
+          <i class="fas fa-download"></i>
+          <span>Export Data</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="menu-item" onclick="openCategories()">
+          <i class="fas fa-tags"></i>
+          <span>Manage Categories</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        
+        <div class="menu-item" onclick="openHelp()">
+          <i class="fas fa-question-circle"></i>
+          <span>Help & Support</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="balance">
+    <div style="flex: 1;">
+      <strong id="balanceAmount">MWK 0</strong>
+      <div class="balance-updated" id="balanceUpdated">Last updated: Never</div>
+    </div>
+
+    <div class="balance-actions">
+      <button class="balance-edit-btn" onclick="showEditBalanceModal()" title="Edit balance">
+        <i class="fas fa-edit"></i>
+      </button>
+      <div class="source" onclick="toggleBalanceMenu()">
+        <span id="balanceSource">Select Account</span>
+        <i class="fas fa-chevron-down"></i>
+
+        <div class="source-menu" id="balanceMenu">
+          <div onclick="setBalance('manual')">Manual</div>
+          <div onclick="setBalance('mpamba')">TNM Mpamba</div>
+          <div onclick="setBalance('airtel')">Airtel Money</div>
+          <div onclick="setBalance('bank')">Bank Account</div>
+          <div onclick="showSMSParser()">📱 Update from SMS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Update Actions -->
+  <div class="quick-actions">
+    <button class="quick-btn update" onclick="showSMSParser()">
+      <i class="fas fa-sync-alt"></i> Update Balance
+    </button>
+    <button class="quick-btn ussd" onclick="showUSSDHelper()">
+      <i class="fas fa-phone"></i> Check USSD
+    </button>
+  </div>
+
+  <!-- Transaction History Modal -->
+  <div class="modal" id="historyModal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 id="historyTitle">Transaction History</h3>
+        <i class="fas fa-times" onclick="closeHistory()"></i>
+      </div>
+      
+      <div id="historyContent">
+        <!-- Transaction items will be inserted here -->
+      </div>
+      
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #334155;">
+        <div style="display: flex; justify-content: space-between; font-size: 16px; font-weight: bold;">
+          <span>Total:</span>
+          <span id="historyTotal">MWK 0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USSD Helper Modal -->
+  <div class="modal" id="ussdModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Check Account Balance</h3>
+        <i class="fas fa-times" onclick="closeUSSDHelper()"></i>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
+          Follow these steps to check your <strong id="ussdAccountName">account</strong> balance:
+        </p>
+
+        <div class="ussd-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <strong>Dial USSD Code</strong>
+            <p>Tap the button below to dial the USSD code</p>
+            <a id="ussdDialLink" href="tel:*444#" class="ussd-dial-btn">
+              <i class="fas fa-phone"></i> Dial <span id="ussdCode">*444#</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="ussd-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <strong>Check Your Balance</strong>
+            <p id="ussdInstructions">Follow the prompts on your phone to view your balance</p>
+          </div>
+        </div>
+
+        <div class="ussd-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <strong>Update in App</strong>
+            <p>Copy the SMS with your balance and paste it here</p>
+            <button class="btn-parse" onclick="closeUSSDHelper(); showSMSParser();" style="width: 100%; margin-top: 8px;">
+              <i class="fas fa-paste"></i> Paste Balance SMS
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: rgba(34,197,94,0.1); padding: 12px; border-radius: 10px; border: 1px solid rgba(34,197,94,0.3);">
+        <div style="display: flex; gap: 8px; align-items: start;">
+          <i class="fas fa-info-circle" style="color: #22c55e; margin-top: 2px;"></i>
+          <p style="margin: 0; font-size: 13px; color: #94a3b8;">
+            <strong style="color: #22c55e;">Tip:</strong> Most providers send an SMS with your balance after checking. Just copy and paste it!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Balance Modal -->
+  <div class="modal" id="editBalanceModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit Balance</h3>
+        <i class="fas fa-times" onclick="closeEditBalanceModal()"></i>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 16px;">
+          Edit the balance for <strong id="editAccountName">Manual</strong>
+        </p>
+
+        <div class="form-group">
+          <label>Current Balance (MWK)</label>
+          <input type="number" id="editBalanceAmount" placeholder="Enter amount" step="0.01">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button class="btn-cancel" onclick="closeEditBalanceModal()" style="flex: 1;">
+            Cancel
+          </button>
+          <button class="btn-parse" onclick="saveEditedBalance()" style="flex: 1;">
+            <i class="fas fa-save"></i> Save
+          </button>
+        </div>
+
+        <button class="btn-cancel" onclick="clearBalance()" style="width: 100%; margin-top: 10px; background: #ef4444;">
+          <i class="fas fa-trash"></i> Clear Balance
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMS Parser Modal -->
+  <div class="modal" id="smsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Update Balance from SMS</h3>
+        <i class="fas fa-times" onclick="closeSMSParser()"></i>
+      </div>
+      <p class="modal-info">Paste your balance SMS from TNM Mpamba, Airtel Money, or Bank below:</p>
+      <textarea id="smsInput" placeholder="Example:&#10;Your Mpamba balance is MWK 420,000.00&#10;&#10;or&#10;&#10;Trans. ID: BW260112.1629.D21366 Your balance is 25102.03MK&#10;&#10;or&#10;&#10;Your account balance is MWK 1,250,000.00"></textarea>
+      
+      <div id="accountSelector" style="display:none; margin-top: 16px;">
+        <p class="modal-info">Which account is this balance for?</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;">
+          <button class="account-select-btn" onclick="confirmAccount('mpamba')">
+            <i class="fas fa-mobile-alt"></i> TNM Mpamba
+          </button>
+          <button class="account-select-btn" onclick="confirmAccount('airtel')">
+            <i class="fas fa-mobile-alt"></i> Airtel Money
+          </button>
+          <button class="account-select-btn" onclick="confirmAccount('bank')">
+            <i class="fas fa-university"></i> Bank Account
+          </button>
+          <button class="account-select-btn" onclick="confirmAccount('manual')">
+            <i class="fas fa-hand-paper"></i> Manual
+          </button>
+        </div>
+      </div>
+      
+      <div class="modal-buttons" id="parseButtons">
+        <button class="btn-cancel" onclick="closeSMSParser()">Cancel</button>
+        <button class="btn-parse" onclick="parseSMS()">Parse SMS</button>
+      </div>
+      <div id="parseResult"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><i class="fas fa-arrow-down"></i> Income</h2>
+    <div id="incomeContainer">
+      <div style="text-align: center; padding: 30px 20px; color: #64748b;">
+        <i class="fas fa-arrow-down" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
+        <p style="margin: 0;">No income transactions yet</p>
+      </div>
+    </div>
+    <div class="btn" onclick="showTransactionHistory('income')">View all income history</div>
+  </div>
+
+  <div class="card">
+    <h2><i class="fas fa-arrow-up"></i> Expenses</h2>
+    <div id="expenseContainer">
+      <div style="text-align: center; padding: 30px 20px; color: #64748b;">
+        <i class="fas fa-arrow-up" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
+        <p style="margin: 0;">No expense transactions yet</p>
+      </div>
+    </div>
+    <div class="btn" onclick="showTransactionHistory('expense')">View all expenses</div>
+  </div>
+
+  <div class="card">
+    <h2><i class="fas fa-chart-pie"></i> Category Budgets</h2>
+    <div id="categoryBudgets">
+      <!-- Category budgets will be loaded here -->
+    </div>
+    <div class="btn" onclick="window.location.href='budget.html'" style="margin-top: 10px;">
+      <i class="fas fa-plus"></i> Add New Budget
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('transaction')">Add Transaction</div>
+  <div class="tab" onclick="switchTab('budget')">Budgets</div>
+</div>
+
+<script>
+  const balances = {
+    manual: { amount: "MWK 850,000", label: "Manual" },
+    mpamba: { amount: "MWK 420,000", label: "TNM Mpamba" },
+    airtel: { amount: "MWK 315,000", label: "Airtel Money" },
+    bank: { amount: "MWK 1,250,000", label: "Bank Account" }
+  };
+
+  // Sample transaction data - Load from localStorage or use defaults
+  let transactions = {
+    income: [],
+    expense: []
+  };
+
+  // Load transactions from localStorage
+  function loadTransactions() {
+    const saved = localStorage.getItem('transactions');
+    if (saved) {
+      transactions = JSON.parse(saved);
+    }
+    updateOverviewDisplay();
+  }
+
+  // Load saved balances and timestamps
+  function loadSavedBalances() {
+    const saved = localStorage.getItem('accountBalances');
+    if (saved) {
+      const savedData = JSON.parse(saved);
+      for (let key in savedData) {
+        if (balances[key]) {
+          balances[key].amount = savedData[key].amount;
+          balances[key].lastUpdated = savedData[key].lastUpdated;
+        }
+      }
+    }
+  }
+
+  // Close modal when clicking outside
+  document.addEventListener('click', function(e) {
+    const smsModal = document.getElementById('smsModal');
+    const historyModal = document.getElementById('historyModal');
+    const ussdModal = document.getElementById('ussdModal');
+    const mainMenu = document.getElementById('mainMenu');
+    const editBalanceModal = document.getElementById('editBalanceModal');
+    
+    if (e.target === smsModal) {
+      closeSMSParser();
+    }
+    if (e.target === historyModal) {
+      closeHistory();
+    }
+    if (e.target === ussdModal) {
+      closeUSSDHelper();
+    }
+    if (e.target === mainMenu) {
+      closeMainMenu();
+    }
+    if (e.target === editBalanceModal) {
+      closeEditBalanceModal();
+    }
+  });
+
+  // Update overview display with latest transactions
+  function updateOverviewDisplay() {
+    // Update income container - show latest 2
+    const incomeContainer = document.getElementById('incomeContainer');
+    if (incomeContainer) {
+      if (transactions.income.length === 0) {
+        incomeContainer.innerHTML = `
+          <div style="text-align: center; padding: 30px 20px; color: #64748b;">
+            <i class="fas fa-arrow-down" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
+            <p style="margin: 0;">No income transactions yet</p>
+          </div>
+        `;
+      } else {
+        const latest = transactions.income.slice(0, 2);
+        let html = '';
+        latest.forEach(item => {
+          html += `
+            <div class="row"><span>${item.category}</span><strong>MWK ${item.amount.toLocaleString()}</strong></div>
+            <div class="date">${item.date}</div>
+          `;
+        });
+        incomeContainer.innerHTML = html;
+      }
+    }
+
+    // Update expense container - show latest 2
+    const expenseContainer = document.getElementById('expenseContainer');
+    if (expenseContainer) {
+      if (transactions.expense.length === 0) {
+        expenseContainer.innerHTML = `
+          <div style="text-align: center; padding: 30px 20px; color: #64748b;">
+            <i class="fas fa-arrow-up" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
+            <p style="margin: 0;">No expense transactions yet</p>
+          </div>
+        `;
+      } else {
+        const latest = transactions.expense.slice(0, 2);
+        let html = '';
+        latest.forEach(item => {
+          html += `
+            <div class="row"><span>${item.category}</span><strong>MWK ${item.amount.toLocaleString()}</strong></div>
+            <div class="date">${item.date}</div>
+          `;
+        });
+        expenseContainer.innerHTML = html;
+      }
+    }
+  }
+
+  // Load category budgets from localStorage
+  function loadCategoryBudgets() {
+    const budgets = JSON.parse(localStorage.getItem('categoryBudgets') || '{}');
+    const container = document.getElementById('categoryBudgets');
+    
+    if (Object.keys(budgets).length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 30px 20px; color: #64748b;">
+          <i class="fas fa-chart-pie" style="font-size: 40px; margin-bottom: 12px; opacity: 0.5;"></i>
+          <p style="margin: 0;">No budgets yet. Create one to start tracking!</p>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    for (const [category, data] of Object.entries(budgets)) {
+      const spent = data.spent || 0;
+      const budget = data.budget || 0;
+      const percentage = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+      
+      let barClass = 'green';
+      if (percentage >= 100) barClass = 'red';
+      else if (percentage >= 80) barClass = 'yellow';
+
+      html += `
+        <div class="budget-item">
+          <div class="budget-header">
+            <span>${category}</span>
+            <span>MWK ${spent.toLocaleString()} / ${budget.toLocaleString()}</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar ${barClass}" style="width:${percentage}%"></div>
+          </div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = html;
+  }
+
+  let currentSource = 'manual';
+  let pendingAmount = null;
+
+  // Load saved balances and timestamps
+  function loadSavedBalances() {
+    const saved = localStorage.getItem('accountBalances');
+    const savedCurrent = localStorage.getItem('currentAccount');
+    
+    if (saved) {
+      const savedData = JSON.parse(saved);
+      for (let key in savedData) {
+        if (balances[key]) {
+          balances[key].amount = savedData[key].amount;
+          balances[key].lastUpdated = savedData[key].lastUpdated;
+        }
+      }
+    }
+    
+    // Restore last used account or prompt to select
+    if (savedCurrent && balances[savedCurrent]) {
+      currentSource = savedCurrent;
+      document.getElementById("balanceAmount").innerText = balances[savedCurrent].amount;
+      document.getElementById("balanceSource").innerText = balances[savedCurrent].label;
+    } else {
+      // First time user - show prompt
+      currentSource = null;
+      document.getElementById("balanceAmount").innerText = "MWK 0";
+      document.getElementById("balanceSource").innerText = "Select Account";
+    }
+    
+    updateLastUpdatedDisplay();
+  }
+
+  function saveBalances() {
+    localStorage.setItem('accountBalances', JSON.stringify(balances));
+    if (currentSource) {
+      localStorage.setItem('currentAccount', currentSource);
+    }
+  }
+
+  function updateLastUpdatedDisplay() {
+    if (!currentSource) {
+      const updateEl = document.getElementById('balanceUpdated');
+      if (updateEl) {
+        updateEl.textContent = 'Select an account to get started';
+        updateEl.style.color = '#94a3b8';
+      }
+      return;
+    }
+    
+    const lastUpdated = balances[currentSource].lastUpdated;
+    const updateEl = document.getElementById('balanceUpdated');
+    
+    if (!updateEl) return;
+    
+    if (!lastUpdated) {
+      updateEl.textContent = 'Last updated: Never';
+      updateEl.style.color = '#ef4444';
+      return;
+    }
+
+    const now = Date.now();
+    const diff = now - lastUpdated;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    let timeText = '';
+    if (minutes < 1) timeText = 'Just now';
+    else if (minutes < 60) timeText = `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    else if (hours < 24) timeText = `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    else timeText = `${days} day${days > 1 ? 's' : ''} ago`;
+
+    updateEl.textContent = `Last updated: ${timeText}`;
+    updateEl.style.color = hours < 24 ? '#22c55e' : '#94a3b8';
+  }
+
+  function toggleBalanceMenu() {
+    document.getElementById("balanceMenu").classList.toggle("show");
+  }
+
+  function setBalance(type) {
+    currentSource = type;
+    document.getElementById("balanceAmount").innerText = balances[type].amount;
+    document.getElementById("balanceSource").innerText = balances[type].label;
+    document.getElementById("balanceMenu").classList.remove("show");
+    saveBalances();
+    updateLastUpdatedDisplay();
+  }
+
+  function showEditBalanceModal() {
+    if (!currentSource) {
+      alert('⚠️ Please select an account first!');
+      return;
+    }
+    
+    const modal = document.getElementById('editBalanceModal');
+    document.getElementById('editAccountName').textContent = balances[currentSource].label;
+    
+    // Pre-fill with current amount (remove "MWK " and commas)
+    const currentAmount = balances[currentSource].amount.replace('MWK ', '').replace(/,/g, '');
+    document.getElementById('editBalanceAmount').value = currentAmount;
+    
+    modal.classList.add('show');
+  }
+
+  function closeEditBalanceModal() {
+    document.getElementById('editBalanceModal').classList.remove('show');
+  }
+
+  function saveEditedBalance() {
+    const input = document.getElementById('editBalanceAmount');
+    const amount = parseFloat(input.value);
+    
+    if (isNaN(amount) || amount < 0) {
+      alert('⚠️ Please enter a valid amount!');
+      input.focus();
+      return;
+    }
+    
+    const formattedAmount = `MWK ${amount.toLocaleString()}`;
+    balances[currentSource].amount = formattedAmount;
+    balances[currentSource].lastUpdated = Date.now();
+    
+    document.getElementById('balanceAmount').innerText = formattedAmount;
+    
+    saveBalances();
+    updateLastUpdatedDisplay();
+    closeEditBalanceModal();
+    
+    alert(`✅ Balance updated successfully!\n\n${balances[currentSource].label}: ${formattedAmount}`);
+  }
+
+  function clearBalance() {
+    if (confirm(`⚠️ Clear balance for ${balances[currentSource].label}?\n\nThis will set the balance to MWK 0.`)) {
+      balances[currentSource].amount = 'MWK 0';
+      balances[currentSource].lastUpdated = Date.now();
+      
+      document.getElementById('balanceAmount').innerText = 'MWK 0';
+      
+      saveBalances();
+      updateLastUpdatedDisplay();
+      closeEditBalanceModal();
+      
+      alert('✅ Balance cleared!');
+    }
+  }
+
+  function showUSSDHelper() {
+    const modal = document.getElementById('ussdModal');
+    const accountName = document.getElementById('ussdAccountName');
+    const ussdCode = document.getElementById('ussdCode');
+    const dialLink = document.getElementById('ussdDialLink');
+    const instructions = document.getElementById('ussdInstructions');
+
+    accountName.textContent = balances[currentSource].label;
+
+    if (currentSource === 'mpamba') {
+      ussdCode.textContent = '*444#';
+      dialLink.href = 'tel:*444#';
+      instructions.textContent = 'Select "Check Balance" or option 6 from the menu';
+    } else if (currentSource === 'airtel') {
+      ussdCode.textContent = '*444#';
+      dialLink.href = 'tel:*444#';
+      instructions.textContent = 'Select "My Account" then "Balance" from the menu';
+    } else if (currentSource === 'bank') {
+      ussdCode.textContent = 'Varies by bank';
+      dialLink.href = '#';
+      dialLink.onclick = (e) => {
+        e.preventDefault();
+        alert('Contact your bank for USSD code:\n\nStandard Bank: *447#\nNational Bank: *422#\nFDH Bank: *448#\nNBS Bank: *446#');
+      };
+      instructions.textContent = 'Check your bank\'s USSD code. Most banks send SMS balance updates.';
+    } else {
+      ussdCode.textContent = 'N/A';
+      dialLink.style.display = 'none';
+      instructions.textContent = 'Manual balance - enter your amount directly';
+    }
+
+    modal.classList.add('show');
+  }
+
+  function closeUSSDHelper() {
+    document.getElementById('ussdModal').classList.remove('show');
+  }
+
+  function toggleMainMenu() {
+    document.getElementById('mainMenu').classList.add('show');
+    showMainMenuContent();
+  }
+
+  function closeMainMenu() {
+    document.getElementById('mainMenu').classList.remove('show');
+  }
+
+  function showMainMenuContent() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = 'Menu';
+    content.innerHTML = `
+      <div class="menu-item" onclick="openReports()">
+        <i class="fas fa-chart-line"></i>
+        <span>Reports & Analytics</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <div class="menu-item" onclick="openExport()">
+        <i class="fas fa-download"></i>
+        <span>Export Data</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <div class="menu-item" onclick="openCategories()">
+        <i class="fas fa-tags"></i>
+        <span>Manage Categories</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <div class="menu-item" onclick="window.location.href='savings-goals.html'">
+        <i class="fas fa-bullseye"></i>
+        <span>Goals & Savings</span>
+        <span style="background: linear-gradient(90deg,#22c55e,#3b82f6); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: auto; margin-right: 8px;">NEW</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <div class="menu-item" onclick="openHelp()">
+        <i class="fas fa-question-circle"></i>
+        <span>Help & Support</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+      
+      <div class="menu-item" onclick="openContactDeveloper()">
+        <i class="fas fa-user-tie"></i>
+        <span>Contact Developer</span>
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    `;
+  }
+
+  function openGoals() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Goals & Savings <span style="background: linear-gradient(90deg,#22c55e,#3b82f6); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-left: 8px;">NEW</span>';
+    
+    content.innerHTML = `
+      <div class="info-section">
+        <h4>Set Your Financial Goals</h4>
+        <p>Track your progress towards important financial milestones.</p>
+      </div>
+      
+      <div class="info-section">
+        <h4>Example Goals</h4>
+        <p>
+        • Emergency Fund: MWK 500,000<br>
+        • New Phone: MWK 250,000<br>
+        • School Fees: MWK 150,000<br>
+        • Holiday Trip: MWK 400,000
+        </p>
+      </div>
+      
+      <div class="info-section">
+        <h4>Savings Tips</h4>
+        <p>
+        • Set aside 20% of income<br>
+        • Track daily expenses<br>
+        • Cut unnecessary spending<br>
+        • Review budgets monthly<br>
+        • Use automatic savings transfers<br>
+        • Create separate accounts for goals
+        </p>
+      </div>
+      
+      <div class="info-section">
+        <h4>Smart Saving Strategies</h4>
+        <p>
+        <strong>The 50/30/20 Rule:</strong><br>
+        • 50% - Needs (rent, food, utilities)<br>
+        • 30% - Wants (entertainment, dining)<br>
+        • 20% - Savings & debt repayment
+        </p>
+      </div>
+      
+      <button class="btn-parse" style="width: 100%; margin-top: 10px;">
+        <i class="fas fa-plus"></i> Create New Goal (Coming Soon)
+      </button>
+    `;
+  }
+
+  function openContactDeveloper() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Contact Developer';
+    
+    content.innerHTML = `
+      <div style="text-align: center; padding: 20px 10px;">
+        <!-- Developer Photo (Replace developer-photo.jpg with your actual photo) -->
+        <img src="developer-photo.jpg" alt="Daniel Makulidwa" class="developer-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        
+        <!-- Fallback Avatar if no photo -->
+        <div class="developer-avatar" style="display: none;">
+          <i class="fas fa-user"></i>
+        </div>
+        
+        <h2 style="margin: 0 0 8px 0; font-size: 22px;">Daniel Makulidwa</h2>
+        <p style="color: #3b82f6; margin: 0 0 4px 0; font-weight: 600;">IT Technician</p>
+        <p style="color: #94a3b8; margin: 0;">Malawian Citizen</p>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-envelope"></i> Email</h4>
+        <a href="mailto:danielmakulidwah@gmail.com" class="contact-btn">
+          <i class="fas fa-envelope"></i>
+          <span>danielmakulidwah@gmail.com</span>
+        </a>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-phone"></i> Phone</h4>
+        <a href="tel:+265886872397" class="contact-btn" style="margin-bottom: 10px;">
+          <i class="fas fa-phone"></i>
+          <span>+265 886 872 397</span>
+        </a>
+        <a href="tel:+265881381486" class="contact-btn">
+          <i class="fas fa-mobile-alt"></i>
+          <span>+265 881 381 486</span>
+        </a>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fab fa-whatsapp"></i> WhatsApp</h4>
+        <a href="https://wa.me/265886872397" class="contact-btn" target="_blank">
+          <i class="fab fa-whatsapp"></i>
+          <span>Chat on WhatsApp</span>
+        </a>
+      </div>
+      
+      <div class="info-section" style="background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);">
+        <h4 style="color: #22c55e;"><i class="fas fa-info-circle"></i> About This App</h4>
+        <p style="font-size: 13px; margin: 0;">
+          Budget Master v1.0.0<br>
+          Built with ❤️ in Malawi<br>
+          © 2026 Daniel Makulidwa
+        </p>
+      </div>
+    `;
+  }
+
+  function openSettings() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Settings';
+    
+    // Get current settings
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    const currentCurrency = localStorage.getItem('currency') || 'MWK';
+    const showDecimals = localStorage.getItem('showDecimals') !== 'false';
+    const budgetAlerts = localStorage.getItem('budgetAlerts') !== 'false';
+    const balanceWarnings = localStorage.getItem('balanceWarnings') !== 'false';
+    const monthlySummary = localStorage.getItem('monthlySummary') !== 'false';
+    
+    content.innerHTML = `
+      <div class="info-section">
+        <h4><i class="fas fa-palette"></i> Appearance</h4>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <span>Theme</span>
+          <select id="themeSelect" onchange="changeTheme(this.value)" style="background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 8px; color: #fff;">
+            <option value="dark" ${currentTheme === 'dark' ? 'selected' : ''}>Dark Mode</option>
+            <option value="light" ${currentTheme === 'light' ? 'selected' : ''}>Light Mode</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-money-bill-wave"></i> Currency</h4>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <span>Default Currency</span>
+          <select id="currencySelect" onchange="changeCurrency(this.value)" style="background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 8px; color: #fff;">
+            <option value="MWK" ${currentCurrency === 'MWK' ? 'selected' : ''}>MWK - Malawian Kwacha</option>
+            <option value="USD" ${currentCurrency === 'USD' ? 'selected' : ''}>USD - US Dollar</option>
+            <option value="EUR" ${currentCurrency === 'EUR' ? 'selected' : ''}>EUR - Euro</option>
+          </select>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+          <span>Show decimals</span>
+          <input type="checkbox" id="decimalsCheck" onchange="toggleDecimals(this.checked)" ${showDecimals ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-bell"></i> Notifications</h4>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span>Budget limit alerts</span>
+          <input type="checkbox" id="budgetAlertsCheck" onchange="toggleNotification('budgetAlerts', this.checked)" ${budgetAlerts ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span>Low balance warnings</span>
+          <input type="checkbox" id="balanceWarningsCheck" onchange="toggleNotification('balanceWarnings', this.checked)" ${balanceWarnings ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Monthly summary</span>
+          <input type="checkbox" id="monthlySummaryCheck" onchange="toggleNotification('monthlySummary', this.checked)" ${monthlySummary ? 'checked' : ''} style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-lock"></i> Security</h4>
+        <p style="margin-bottom: 10px;">Protect your financial data with a PIN</p>
+        <button class="btn-parse" onclick="setupPIN()" style="width: 100%;">
+          <i class="fas fa-shield-alt"></i> ${localStorage.getItem('appPIN') ? 'Change PIN' : 'Set up PIN Protection'}
+        </button>
+        ${localStorage.getItem('appPIN') ? '<button class="btn-cancel" onclick="removePIN()" style="width: 100%; margin-top: 10px; background: #ef4444;"><i class="fas fa-times"></i> Remove PIN</button>' : ''}
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-database"></i> Data Management</h4>
+        <button class="btn-cancel" onclick="clearAllData()" style="width: 100%; background: #ef4444; margin-bottom: 10px;">
+          <i class="fas fa-trash"></i> Clear All Data
+        </button>
+        <button class="btn-parse" onclick="backupData()" style="width: 100%;">
+          <i class="fas fa-download"></i> Backup Data
+        </button>
+      </div>
+    `;
+  }
+
+  function changeTheme(theme) {
+    localStorage.setItem('theme', theme);
+    if (theme === 'light') {
+      alert('Light mode will be available in the next update!');
+    } else {
+      alert('Theme set to Dark Mode');
+    }
+  }
+
+  function changeCurrency(currency) {
+    localStorage.setItem('currency', currency);
+    alert(`Currency changed to ${currency}. This will apply to new transactions.`);
+  }
+
+  function toggleDecimals(show) {
+    localStorage.setItem('showDecimals', show);
+    alert(`Decimals ${show ? 'enabled' : 'disabled'}`);
+  }
+
+  function toggleNotification(type, enabled) {
+    localStorage.setItem(type, enabled);
+    const labels = {
+      budgetAlerts: 'Budget limit alerts',
+      balanceWarnings: 'Low balance warnings',
+      monthlySummary: 'Monthly summary'
+    };
+    alert(`${labels[type]} ${enabled ? 'enabled' : 'disabled'}`);
+  }
+
+  function setupPIN() {
+    const currentPIN = localStorage.getItem('appPIN');
+    
+    if (currentPIN) {
+      const oldPIN = prompt('Enter your current PIN:');
+      if (oldPIN !== currentPIN) {
+        alert('Incorrect PIN!');
+        return;
+      }
+    }
+    
+    const newPIN = prompt('Enter a new 4-digit PIN:');
+    
+    if (!newPIN) return;
+    
+    if (!/^\d{4}$/.test(newPIN)) {
+      alert('PIN must be exactly 4 digits!');
+      return;
+    }
+    
+    const confirmPIN = prompt('Confirm your PIN:');
+    
+    if (newPIN !== confirmPIN) {
+      alert('PINs do not match!');
+      return;
+    }
+    
+    localStorage.setItem('appPIN', newPIN);
+    alert('PIN set successfully!');
+    openSettings(); // Refresh the settings page
+  }
+
+  function removePIN() {
+    const currentPIN = localStorage.getItem('appPIN');
+    const enteredPIN = prompt('Enter your current PIN to remove it:');
+    
+    if (enteredPIN !== currentPIN) {
+      alert('Incorrect PIN!');
+      return;
+    }
+    
+    if (confirm('Are you sure you want to remove PIN protection?')) {
+      localStorage.removeItem('appPIN');
+      alert('PIN protection removed!');
+      openSettings(); // Refresh the settings page
+    }
+  }
+
+  function clearAllData() {
+    if (confirm('Are you sure you want to clear ALL data? This action cannot be undone!')) {
+      localStorage.clear();
+      alert('All data has been cleared. The page will now reload.');
+      location.reload();
+    }
+  }
+
+  function openReports() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Reports & Analytics';
+    
+    // Calculate totals
+    const totalIncome = transactions.income.reduce((sum, t) => sum + t.amount, 0);
+    const totalExpense = transactions.expense.reduce((sum, t) => sum + t.amount, 0);
+    const netSavings = totalIncome - totalExpense;
+    
+    content.innerHTML = `
+      <div class="info-section">
+        <h4>Monthly Summary</h4>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span>Total Income:</span>
+          <strong style="color: #22c55e;">MWK ${totalIncome.toLocaleString()}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <span>Total Expenses:</span>
+          <strong style="color: #ef4444;">MWK ${totalExpense.toLocaleString()}</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid #334155;">
+          <span>Net Savings:</span>
+          <strong style="color: ${netSavings >= 0 ? '#22c55e' : '#ef4444'};">MWK ${netSavings.toLocaleString()}</strong>
+        </div>
+      </div>
+      <div class="info-section">
+        <h4>Transaction Overview</h4>
+        <p>Total Transactions: ${transactions.income.length + transactions.expense.length}<br>
+        Income Entries: ${transactions.income.length}<br>
+        Expense Entries: ${transactions.expense.length}</p>
+      </div>
+      <div class="info-section">
+        <h4>Quick Actions</h4>
+        <button class="btn-parse" onclick="exportToCSV()" style="width: 100%; margin-bottom: 8px;">
+          <i class="fas fa-download"></i> Download CSV Report
+        </button>
+      </div>
+    `;
+  }
+
+  function openExport() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Export Data';
+    
+    content.innerHTML = `
+      <div class="info-section">
+        <h4><i class="fas fa-file-csv"></i> Export Formats</h4>
+        <p style="margin-bottom: 12px;">Download your financial data in various formats</p>
+        <button class="btn-parse" onclick="exportToCSV()" style="width: 100%; margin-bottom: 10px;">
+          <i class="fas fa-file-csv"></i> Export as CSV
+        </button>
+        <button class="btn-parse" onclick="exportToPDF()" style="width: 100%; margin-bottom: 10px;">
+          <i class="fas fa-file-pdf"></i> Export as PDF
+        </button>
+        <button class="btn-parse" onclick="exportToExcel()" style="width: 100%;">
+          <i class="fas fa-file-excel"></i> Export as Excel
+        </button>
+      </div>
+      
+      <div class="info-section">
+        <h4><i class="fas fa-cloud-upload-alt"></i> Backup & Restore</h4>
+        <p style="margin-bottom: 12px;">Backup all your data to keep it safe</p>
+        <button class="btn-parse" onclick="backupData()" style="width: 100%; margin-bottom: 10px;">
+          <i class="fas fa-download"></i> Backup All Data
+        </button>
+        <button class="btn-parse" onclick="restoreData()" style="width: 100%;">
+          <i class="fas fa-upload"></i> Restore from Backup
+        </button>
+      </div>
+    `;
+  }
+
+  function exportToPDF() {
+    alert('PDF export feature coming soon!\n\nFor now, you can:\n1. Export as CSV\n2. Open in Excel/Google Sheets\n3. Save as PDF from there');
+  }
+
+  function exportToExcel() {
+    alert('Excel export feature coming soon!\n\nFor now, you can:\n1. Export as CSV\n2. Open the CSV file in Excel\n3. Save it as .xlsx format');
+  }
+
+  function restoreData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const data = JSON.parse(event.target.result);
+          
+          if (confirm('This will replace all current data. Continue?')) {
+            // Restore balances
+            if (data.balances) {
+              localStorage.setItem('accountBalances', JSON.stringify(data.balances));
+            }
+            
+            // Restore transactions
+            if (data.transactions) {
+              localStorage.setItem('transactions', JSON.stringify(data.transactions));
+            }
+            
+            // Restore budgets
+            if (data.budgets) {
+              localStorage.setItem('categoryBudgets', JSON.stringify(data.budgets));
+            }
+            
+            alert('Data restored successfully! The page will now reload.');
+            location.reload();
+          }
+        } catch (error) {
+          alert('Error: Invalid backup file!');
+        }
+      };
+      
+      reader.readAsText(file);
+    };
+    
+    input.click();
+  }
+
+  function backupData() {
+    const data = {
+      balances: balances,
+      transactions: transactions,
+      budgets: JSON.parse(localStorage.getItem('categoryBudgets') || '{}'),
+      exportDate: new Date().toISOString()
+    };
+    
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `budget-master-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    alert('Backup downloaded successfully!');
+  }
+
+  function openCategories() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Manage Categories';
+    
+    const budgets = JSON.parse(localStorage.getItem('categoryBudgets') || '{}');
+    let html = '<div class="info-section"><h4>Active Categories</h4>';
+    
+    if (Object.keys(budgets).length === 0) {
+      html += '<p>No categories yet. Create budgets to add categories.</p>';
+    } else {
+      html += '<div style="margin-top: 10px;">';
+      for (const [category, data] of Object.entries(budgets)) {
+        html += `
+          <div class="submenu-item">
+            <i class="fas fa-tag"></i>
+            <span>${category}</span>
+            <span style="color: #64748b; font-size: 12px;">MWK ${data.spent.toLocaleString()} / ${data.budget.toLocaleString()}</span>
+          </div>
+        `;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+    
+    html += `
+      <div class="info-section">
+        <h4>Common Categories</h4>
+        <p style="font-size: 13px;">Food, Transport, Rent, Utilities, Entertainment, Education, Healthcare, House Construction</p>
+      </div>
+    `;
+    
+    content.innerHTML = html;
+  }
+
+  function openHelp() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="showMainMenuContent()"></i> Help & Support';
+    
+    content.innerHTML = `
+      <div class="submenu-item" onclick="showTutorial()">
+        <i class="fas fa-book"></i>
+        <span>How to Use</span>
+      </div>
+      
+      <div class="submenu-item" onclick="showUSSDCodes()">
+        <i class="fas fa-phone-alt"></i>
+        <span>USSD Codes Reference</span>
+      </div>
+      
+      <div class="submenu-item" onclick="showAbout()">
+        <i class="fas fa-info-circle"></i>
+        <span>About Budget Master</span>
+      </div>
+      
+      <div class="info-section" style="margin-top: 20px;">
+        <h4><i class="fas fa-headset"></i> Need More Help?</h4>
+        <p style="margin-bottom: 12px; font-size: 13px;">Get in touch with the developer for support, feature requests, or bug reports.</p>
+        <button class="btn-parse" onclick="openContactDeveloper()" style="width: 100%;">
+          <i class="fas fa-user-tie"></i> Contact Developer
+        </button>
+      </div>
+    `;
+  }
+
+  function showAbout() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="openHelp()"></i> About';
+    
+    content.innerHTML = `
+      <div style="text-align: center; padding: 20px;">
+        <i class="fas fa-wallet" style="font-size: 60px; color: #3b82f6; margin-bottom: 20px;"></i>
+        <h2 style="margin: 0 0 10px 0;">Budget Master</h2>
+        <p style="color: #64748b; margin: 0 0 20px 0;">Version 1.0.0</p>
+      </div>
+      
+      <div class="info-section">
+        <h4>About</h4>
+        <p>Budget Master is a comprehensive personal finance management app designed for Malawians to track income, expenses, and budgets across multiple accounts including TNM Mpamba, Airtel Money, and bank accounts.</p>
+      </div>
+      
+      <div class="info-section">
+        <h4>Features</h4>
+        <p>
+        • Multi-account balance tracking<br>
+        • SMS balance integration<br>
+        • Category-based budgeting<br>
+        • Transaction history<br>
+        • Reports & analytics<br>
+        • Receipt OCR scanning<br>
+        • Data export & backup
+        </p>
+      </div>
+      
+      <div class="info-section">
+        <h4>Developer</h4>
+        <p><strong>Daniel Makulidwa</strong><br>
+        IT Technician<br>
+        Malawian Citizen<br><br>
+        Built with ❤️ in Malawi<br>
+        © 2026 Budget Master</p>
+      </div>
+      
+      <div class="info-section">
+        <h4>Legal</h4>
+        <p>
+        <a href="#" style="color: #3b82f6;">Privacy Policy</a><br>
+        <a href="#" style="color: #3b82f6;">Terms of Service</a>
+        </p>
+      </div>
+    `;
+  }
+
+  function showUSSDCodes() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="openHelp()"></i> USSD Codes';
+    
+    content.innerHTML = `
+      <div class="info-section">
+        <h4>TNM Mpamba</h4>
+        <p>Dial: <strong>*444#</strong><br>
+        Select option 6 or "Check Balance"</p>
+      </div>
+      <div class="info-section">
+        <h4>Airtel Money</h4>
+        <p>Dial: <strong>*444#</strong><br>
+        Select "My Account" then "Balance"</p>
+      </div>
+      <div class="info-section">
+        <h4>Banks</h4>
+        <p>
+        • Standard Bank: <strong>*447#</strong><br>
+        • National Bank: <strong>*422#</strong><br>
+        • FDH Bank: <strong>*448#</strong><br>
+        • NBS Bank: <strong>*446#</strong>
+        </p>
+      </div>
+    `;
+  }
+
+  function showTutorial() {
+    const title = document.getElementById('mainMenuTitle');
+    const content = document.getElementById('menuContent');
+    
+    title.innerHTML = '<i class="fas fa-arrow-left back-btn" onclick="openHelp()"></i> How to Use';
+    
+    content.innerHTML = `
+      <div class="info-section">
+        <h4>Getting Started</h4>
+        <p><strong>1. Update Balance:</strong> Click "Update Balance" or "Check USSD" to sync your real account balance via SMS.</p>
+      </div>
+      <div class="info-section">
+        <h4>Adding Transactions</h4>
+        <p><strong>2. Record Income/Expenses:</strong> Go to "Add Transaction" tab, fill in details, and save. Transactions appear on Overview.</p>
+      </div>
+      <div class="info-section">
+        <h4>Setting Budgets</h4>
+        <p><strong>3. Create Category Budgets:</strong> Use "Budgets" tab to set spending limits per category (Food, Transport, etc.).</p>
+      </div>
+      <div class="info-section">
+        <h4>Tips</h4>
+        <p>• Use OCR to scan receipts automatically<br>
+        • Check Reports for spending insights<br>
+        • Set budget alerts to avoid overspending<br>
+        • Export data regularly for backup</p>
+      </div>
+    `;
+  }
+
+  function exportToCSV() {
+    let csv = 'Type,Category,Amount,Description,Date,Account\n';
+    
+    transactions.income.forEach(t => {
+      csv += `Income,"${t.category}",${t.amount},"${t.description}","${t.date}","${t.account}"\n`;
+    });
+    
+    transactions.expense.forEach(t => {
+      csv += `Expense,"${t.category}",${t.amount},"${t.description}","${t.date}","${t.account}"\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'budget-master-transactions.csv';
+    a.click();
+  }
+
+  function showSMSParser() {
+    document.getElementById("balanceMenu").classList.remove("show");
+    document.getElementById("smsModal").classList.add("show");
+    document.getElementById("smsInput").value = "";
+    document.getElementById("parseResult").style.display = "none";
+    document.getElementById("accountSelector").style.display = "none";
+    document.getElementById("parseButtons").style.display = "flex";
+    pendingAmount = null;
+  }
+
+  function closeSMSParser() {
+    document.getElementById("smsModal").classList.remove("show");
+    pendingAmount = null;
+  }
+
+  function parseSMS() {
+    const smsText = document.getElementById("smsInput").value.trim();
+    const resultDiv = document.getElementById("parseResult");
+
+    if (!smsText) {
+      resultDiv.className = "error";
+      resultDiv.textContent = "Please paste your SMS message first.";
+      return;
+    }
+
+    // Improved parsing patterns
+    const patterns = [
+      // Airtel Money patterns - check first for specificity
+      /(?:airtel\s*money|airtel).*?(?:balance\s*is|bal\s*:?)\s*(?:MK|MWK|K)?\s*([\d,]+(?:\.\d{2})?)\s*(?:MK|MWK|K)?/i,
+      /trans\.?\s*id.*?(?:your\s*)?balance\s*(?:is)?\s*([\d,]+(?:\.\d{2})?)\s*(?:MK|MWK|K)/i,
+      
+      // TNM Mpamba patterns
+      /(?:mpamba|tnm).*?(?:balance\s*is|bal\s*:?)\s*(?:MK|MWK|K)?\s*([\d,]+(?:\.\d{2})?)/i,
+      
+      // Bank patterns
+      /(?:account\s*balance|available\s*balance|bank\s*balance).*?(?:is|:)?\s*(?:MK|MWK|K)?\s*([\d,]+(?:\.\d{2})?)\s*(?:MK|MWK|K)?/i,
+      /(?:standard\s*bank|nbm|natbank|fdhbank|first\s*capital).*?(?:balance|bal).*?(?:MK|MWK|K)?\s*([\d,]+(?:\.\d{2})?)/i,
+      
+      // Generic balance patterns
+      /(?:balance\s*is|bal\s*:?)\s*(?:MK|MWK|K)?\s*([\d,]+(?:\.\d{2})?)\s*(?:MK|MWK|K)?/i,
+      /(?:MK|MWK|K)\s*([\d,]+(?:\.\d{2})?)/i
+    ];
+
+    let amount = null;
+    let service = null;
+
+    // Check for service identifiers in the SMS text
+    const lowerText = smsText.toLowerCase();
+    const hasAirtel = /airtel/i.test(smsText) || /trans\.?\s*id.*?bw/i.test(smsText);
+    const hasMpamba = /mpamba|tnm/i.test(smsText);
+    const hasBank = /(?:account\s*balance|available\s*balance|standard\s*bank|nbm|natbank|fdhbank|first\s*capital|bank\s*account)/i.test(smsText);
+
+    // Try each pattern
+    for (let pattern of patterns) {
+      const match = smsText.match(pattern);
+      if (match) {
+        amount = match[1].replace(/,/g, '');
+        
+        // Determine service based on SMS content
+        if (hasBank && !hasAirtel && !hasMpamba) {
+          service = 'bank';
+        } else if (hasAirtel && !hasMpamba && !hasBank) {
+          service = 'airtel';
+        } else if (hasMpamba && !hasAirtel && !hasBank) {
+          service = 'mpamba';
+        }
+        // If multiple matches or none, leave service as null for user selection
+        break;
+      }
+    }
+
+    if (amount) {
+      const numAmount = parseFloat(amount);
+      const formattedAmount = `MWK ${numAmount.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
+      pendingAmount = formattedAmount;
+
+      if (service) {
+        // Service detected, update immediately
+        confirmAccount(service);
+      } else {
+        // Service not clear, ask user to select
+        document.getElementById("parseButtons").style.display = "none";
+        document.getElementById("accountSelector").style.display = "block";
+        resultDiv.className = "success";
+        resultDiv.innerHTML = `✓ Balance found: <strong>${formattedAmount}</strong><br><small>Please select which account this belongs to:</small>`;
+      }
+    } else {
+      resultDiv.className = "error";
+      resultDiv.innerHTML = `Could not find balance amount in SMS.<br><small>Make sure your SMS contains the balance (e.g., "MWK 420,000" or "25102.03MK")</small>`;
+    }
+  }
+
+  function confirmAccount(service) {
+    if (!pendingAmount) return;
+
+    balances[service].amount = pendingAmount;
+    balances[service].lastUpdated = Date.now();
+    currentSource = service;
+    document.getElementById("balanceAmount").innerText = pendingAmount;
+    document.getElementById("balanceSource").innerText = balances[service].label;
+    
+    // Save to localStorage
+    saveBalances();
+    updateLastUpdatedDisplay();
+    
+    const resultDiv = document.getElementById("parseResult");
+    resultDiv.className = "success";
+    resultDiv.innerHTML = `✓ Balance updated successfully!<br><strong>${balances[service].label}: ${pendingAmount}</strong>`;
+
+    setTimeout(() => {
+      closeSMSParser();
+    }, 1500);
+  }
+
+  function switchTab(tab) {
+    if (tab === 'overview') return;
+    if (tab === 'transaction') window.location.href = 'add-transaction.html';
+    if (tab === 'budget') window.location.href = 'budget.html';
+  }
+
+  function showTransactionHistory(type) {
+    const modal = document.getElementById('historyModal');
+    const title = document.getElementById('historyTitle');
+    const content = document.getElementById('historyContent');
+    const totalEl = document.getElementById('historyTotal');
+    
+    // Set title
+    title.innerHTML = type === 'income' 
+      ? '<i class="fas fa-arrow-down"></i> Income History' 
+      : '<i class="fas fa-arrow-up"></i> Expense History';
+    
+    // Get transactions
+    const items = transactions[type];
+    
+    if (items.length === 0) {
+      content.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; color: #64748b;">
+          <i class="fas fa-inbox" style="font-size: 50px; margin-bottom: 16px; opacity: 0.5;"></i>
+          <p style="margin: 0;">No ${type} transactions yet</p>
+        </div>
+      `;
+      totalEl.parentElement.style.display = 'none';
+      modal.classList.add('show');
+      return;
+    }
+    
+    // Calculate total
+    const total = items.reduce((sum, item) => sum + item.amount, 0);
+    totalEl.textContent = `MWK ${total.toLocaleString()}`;
+    totalEl.style.color = type === 'income' ? '#22c55e' : '#ef4444';
+    totalEl.parentElement.style.display = 'flex';
+    
+    // Build transaction list
+    let html = '';
+    items.forEach((item, index) => {
+      html += `
+        <div class="transaction-item ${type}">
+          <div class="transaction-header">
+            <span class="transaction-category">${item.category}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="transaction-amount ${type}">
+                ${type === 'income' ? '+' : '-'} MWK ${item.amount.toLocaleString()}
+              </span>
+              <button class="delete-transaction-btn" onclick="deleteTransaction('${type}', ${index})" title="Delete transaction">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="transaction-date">${item.date}</div>
+          <div class="transaction-account"><i class="fas fa-wallet"></i> ${item.account}</div>
+        </div>
+      `;
+    });
+    
+    content.innerHTML = html;
+    modal.classList.add('show');
+  }
+
+  function deleteTransaction(type, index) {
+    const transaction = transactions[type][index];
+    
+    if (confirm(`Delete this transaction?\n\n${transaction.category}: MWK ${transaction.amount.toLocaleString()}\n${transaction.date}`)) {
+      // Remove from transactions array
+      transactions[type].splice(index, 1);
+      
+      // Save to localStorage
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      
+      // Update displays
+      updateOverviewDisplay();
+      showTransactionHistory(type);
+      
+      alert('✅ Transaction deleted successfully!');
+    }
+  }
+
+  function closeHistory() {
+    document.getElementById('historyModal').classList.remove('show');
+  }
+
+  // Load category budgets on page load
+  window.addEventListener('DOMContentLoaded', function() {
+    // Hide splash screen after 3 seconds
+    setTimeout(() => {
+      const splashScreen = document.getElementById('splashScreen');
+      if (splashScreen) {
+        splashScreen.classList.add('hidden');
+      }
+    }, 3000);
+
+    loadSavedBalances();
+    loadTransactions();
+    loadCategoryBudgets();
+    updateLastUpdatedDisplay();
+    
+    // Update timestamps every minute
+    setInterval(updateLastUpdatedDisplay, 60000);
+    
+    // Prevent click events from bubbling in menu content
+    const menuContent = document.querySelector('#mainMenu .modal-content');
+    if (menuContent) {
+      menuContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+    
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((registration) => {
+          console.log('✅ Service Worker registered:', registration.scope);
+        })
+        .catch((error) => {
+          console.error('❌ Service Worker registration failed:', error);
+        });
+    }
+    
+    // Show install prompt after 20 seconds (after notification)
+    setTimeout(checkInstallPrompt, 20000);
+  });
+
+  // PWA Install Prompt
+  let deferredPrompt;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('💡 Install prompt ready');
+  });
+
+  function checkInstallPrompt() {
+    console.log('Checking install prompt...');
+    
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('✅ App already installed');
+      return;
+    }
+    
+    // Check if dismissed before
+    const dismissed = localStorage.getItem('installPromptDismissed');
+    const dismissedTime = localStorage.getItem('installPromptDismissedTime');
+    
+    if (dismissed && dismissedTime) {
+      const daysSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
+      if (daysSinceDismissed < 7) {
+        console.log('Install prompt dismissed recently, days ago:', daysSinceDismissed);
+        return;
+      }
+    }
+    
+    // Show prompt
+    console.log('Showing install prompt');
+    const promptEl = document.getElementById('installPrompt');
+    if (promptEl) {
+      setTimeout(() => {
+        promptEl.classList.add('show');
+      }, 100);
+    }
+  }
+
+  function installApp() {
+    const promptElement = document.getElementById('installPrompt');
+    promptElement.classList.remove('show');
+    
+    if (!deferredPrompt) {
+      alert('📱 To install Budget Master:\n\n1. Tap the menu button (⋮) in your browser\n2. Select "Add to Home Screen"\n3. Enjoy offline access!');
+      return;
+    }
+    
+    deferredPrompt.prompt();
+    
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('✅ User accepted the install prompt');
+        alert('🎉 Budget Master installed successfully!\n\nYou can now access it from your home screen!');
+      } else {
+        console.log('❌ User dismissed the install prompt');
+      }
+      deferredPrompt = null;
+    });
+  }
+
+  function dismissInstallPrompt() {
+    const promptElement = document.getElementById('installPrompt');
+    if (promptElement) {
+      promptElement.classList.remove('show');
+    }
+    localStorage.setItem('installPromptDismissed', 'true');
+    localStorage.setItem('installPromptDismissedTime', Date.now().toString());
+    console.log('Install prompt dismissed');
+  }
+
+  // Detect if running as installed app
+  window.addEventListener('load', () => {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      console.log('✅ Running as installed PWA');
+      document.body.classList.add('installed-app');
+    }
+  });
+
+  // Notification Banner Functions
+  function showNotification() {
+    const banner = document.getElementById('notificationBanner');
+    if (banner) {
+      // Check if notification was dismissed recently
+      const dismissed = localStorage.getItem('notificationDismissed');
+      const dismissedTime = localStorage.getItem('notificationDismissedTime');
+      
+      if (dismissed && dismissedTime) {
+        const hoursSinceDismissed = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60);
+        if (hoursSinceDismissed < 24) {
+          console.log('Notification dismissed recently');
+          return;
+        }
+      }
+      
+      banner.classList.add('show');
+      
+      // Auto-hide after 8 seconds
+      setTimeout(() => {
+        closeNotification();
+      }, 8000);
+    }
+  }
+
+  function closeNotification() {
+    const banner = document.getElementById('notificationBanner');
+    if (banner) {
+      banner.classList.remove('show');
+      banner.classList.add('hide');
+      
+      // Save dismissal to localStorage
+      localStorage.setItem('notificationDismissed', 'true');
+      localStorage.setItem('notificationDismissedTime', Date.now().toString());
+      
+      setTimeout(() => {
+        banner.classList.remove('hide');
+      }, 500);
+    }
+  }
+
+  // Show notification banner after 10 seconds
+  setTimeout(showNotification, 10000);
+</script>
+
+</body>
+</html>
