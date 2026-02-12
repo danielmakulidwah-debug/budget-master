@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Master - Icon Generator</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+
+    .canvas-container {
+      display: none;
+    }
+
+    .icons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto 40px;
+    }
+
+    .icon-item {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+    }
+
+    .icon-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .icon-size {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+
+    .download-btn {
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .download-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .download-all {
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      color: #fff;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .download-all:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .instructions {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: left;
+      border: 1px solid #334155;
+    }
+
+    .instructions h2 {
+      color: #22c55e;
+      margin-top: 0;
+    }
+
+    .instructions ol {
+      line-height: 1.8;
+      color: #94a3b8;
+    }
+
+    .instructions li {
+      margin-bottom: 10px;
+    }
+
+    .status {
+      margin: 20px 0;
+      padding: 15px;
+      background: #1e293b;
+      border-radius: 8px;
+      color: #22c55e;
+      border: 1px solid #22c55e;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📱 Budget Master Icon Generator</h1>
+<p>Generate all required app icons automatically</p>
+
+<div id="status" class="status" style="display: none;">
+  ✅ All icons generated successfully!
+</div>
+
+<button class="download-all" onclick="downloadAllIcons()">
+  <i class="fas fa-download"></i> Download All Icons as ZIP
+</button>
+
+<div class="icons-grid" id="iconsGrid"></div>
+
+<div class="canvas-container">
+  <canvas id="iconCanvas"></canvas>
+</div>
+
+<div class="instructions">
+  <h2>📋 Instructions</h2>
+  <ol>
+    <li><strong>Generate Icons:</strong> Click the button above to generate all icon sizes</li>
+    <li><strong>Download:</strong> Icons will download as individual PNG files</li>
+    <li><strong>Create Folder:</strong> Create an <code>/icons/</code> folder in your GitHub repo</li>
+    <li><strong>Upload:</strong> Upload all downloaded icons to the <code>/icons/</code> folder</li>
+    <li><strong>Verify:</strong> Make sure all 8 icon sizes are uploaded:
+      <ul>
+        <li>icon-72x72.png</li>
+        <li>icon-96x96.png</li>
+        <li>icon-128x128.png</li>
+        <li>icon-144x144.png</li>
+        <li>icon-152x152.png</li>
+        <li>icon-192x192.png</li>
+        <li>icon-384x384.png</li>
+        <li>icon-512x512.png</li>
+      </ul>
+    </li>
+    <li><strong>Test:</strong> Visit your GitHub Pages URL and check if icons appear</li>
+    <li><strong>Continue:</strong> Proceed to PWA Builder for APK conversion</li>
+  </ol>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<script>
+const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+const generatedIcons = [];
+
+function generateIcon(size) {
+  const canvas = document.getElementById('iconCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Set canvas size
+  canvas.width = size;
+  canvas.height = size;
+  
+  // Create gradient background
+  const gradient = ctx.createLinearGradient(0, 0, size, size);
+  gradient.addColorStop(0, '#1e3a8a'); // Dark blue
+  gradient.addColorStop(1, '#0f172a'); // Darker blue
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+  
+  // Add rounded corners effect
+  ctx.globalCompositeOperation = 'destination-in';
+  ctx.beginPath();
+  const cornerRadius = size * 0.225; // iOS-like rounded corners
+  ctx.roundRect(0, 0, size, size, cornerRadius);
+  ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+  
+  // Draw wallet icon (professional design)
+  const iconSize = size * 0.45;
+  const x = (size - iconSize) / 2;
+  const y = size * 0.28; // Position higher to leave room for text
+  
+  // Wallet shadow for depth
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.beginPath();
+  ctx.roundRect(x + size * 0.02, y + size * 0.02, iconSize, iconSize * 0.7, iconSize * 0.12);
+  ctx.fill();
+  
+  // Wallet body (green)
+  const walletGradient = ctx.createLinearGradient(x, y, x + iconSize, y + iconSize);
+  walletGradient.addColorStop(0, '#22c55e');
+  walletGradient.addColorStop(1, '#16a34a');
+  ctx.fillStyle = walletGradient;
+  ctx.beginPath();
+  ctx.roundRect(x, y + iconSize * 0.15, iconSize, iconSize * 0.7, iconSize * 0.12);
+  ctx.fill();
+  
+  // Wallet flap (blue accent)
+  const flapGradient = ctx.createLinearGradient(x, y, x + iconSize, y + iconSize * 0.3);
+  flapGradient.addColorStop(0, '#3b82f6');
+  flapGradient.addColorStop(1, '#2563eb');
+  ctx.fillStyle = flapGradient;
+  ctx.beginPath();
+  ctx.roundRect(x, y, iconSize, iconSize * 0.35, [iconSize * 0.12, iconSize * 0.12, 0, 0]);
+  ctx.fill();
+  
+  // Wallet button/clasp
+  ctx.fillStyle = '#fff';
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+  ctx.shadowBlur = size * 0.01;
+  ctx.shadowOffsetY = size * 0.005;
+  ctx.beginPath();
+  ctx.arc(size / 2, y + iconSize * 0.35, iconSize * 0.09, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowColor = 'transparent';
+  
+  // Inner button detail
+  ctx.fillStyle = '#1e3a8a';
+  ctx.beginPath();
+  ctx.arc(size / 2, y + iconSize * 0.35, iconSize * 0.045, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Card detail in wallet
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  const cardWidth = iconSize * 0.6;
+  const cardHeight = iconSize * 0.15;
+  const cardX = x + (iconSize - cardWidth) / 2;
+  const cardY = y + iconSize * 0.55;
+  ctx.beginPath();
+  ctx.roundRect(cardX, cardY, cardWidth, cardHeight, cardHeight * 0.2);
+  ctx.fill();
+  
+  // Add "Budget Master" text for all sizes
+  if (size >= 96) {
+    // Text background for better readability
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    const textBgHeight = size * 0.18;
+    const textBgY = size - textBgHeight - size * 0.05;
+    ctx.beginPath();
+    ctx.roundRect(size * 0.05, textBgY, size * 0.9, textBgHeight, textBgHeight * 0.3);
+    ctx.fill();
+    
+    // App name text
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = size * 0.015;
+    ctx.shadowOffsetY = size * 0.008;
+    
+    // Adjust font size based on icon size
+    let fontSize = size * 0.085;
+    if (size <= 128) fontSize = size * 0.095;
+    if (size <= 96) fontSize = size * 0.11;
+    
+    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    // Split text into two lines for smaller icons
+    if (size <= 144) {
+      const lineHeight = fontSize * 1.1;
+      ctx.fillText('Budget', size / 2, textBgY + textBgHeight * 0.35);
+      ctx.fillText('Master', size / 2, textBgY + textBgHeight * 0.35 + lineHeight);
+    } else {
+      ctx.fillText('Budget Master', size / 2, textBgY + textBgHeight / 2);
+    }
+    
+    ctx.shadowColor = 'transparent';
+  }
+  
+  return canvas.toDataURL('image/png');
+}
+
+function displayIcons() {
+  const grid = document.getElementById('iconsGrid');
+  grid.innerHTML = '';
+  
+  sizes.forEach(size => {
+    const iconData = generateIcon(size);
+    generatedIcons.push({ size, data: iconData });
+    
+    const item = document.createElement('div');
+    item.className = 'icon-item';
+    item.innerHTML = `
+      <img src="${iconData}" alt="${size}x${size} icon">
+      <div class="icon-size">${size}x${size}px</div>
+      <button class="download-btn" onclick="downloadIcon(${size}, '${iconData}')">
+        <i class="fas fa-download"></i> Download
+      </button>
+    `;
+    grid.appendChild(item);
+  });
+  
+  document.getElementById('status').style.display = 'block';
+}
+
+function downloadIcon(size, dataUrl) {
+  const link = document.createElement('a');
+  link.download = `icon-${size}x${size}.png`;
+  link.href = dataUrl;
+  link.click();
+}
+
+async function downloadAllIcons() {
+  const zip = new JSZip();
+  const iconsFolder = zip.folder('icons');
+  
+  for (let i = 0; i < generatedIcons.length; i++) {
+    const { size, data } = generatedIcons[i];
+    const base64Data = data.split(',')[1];
+    iconsFolder.file(`icon-${size}x${size}.png`, base64Data, { base64: true });
+  }
+  
+  const content = await zip.generateAsync({ type: 'blob' });
+  saveAs(content, 'budget-master-icons.zip');
+}
+
+// Polyfill for roundRect
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+    if (typeof radius === 'number') {
+      radius = [radius, radius, radius, radius];
+    }
+    this.moveTo(x + radius[0], y);
+    this.lineTo(x + width - radius[1], y);
+    this.quadraticCurveTo(x + width, y, x + width, y + radius[1]);
+    this.lineTo(x + width, y + height - radius[2]);
+    this.quadraticCurveTo(x + width, y + height, x + width - radius[2], y + height);
+    this.lineTo(x + radius[3], y + height);
+    this.quadraticCurveTo(x, y + height, x, y + height - radius[3]);
+    this.lineTo(x, y + radius[0]);
+    this.quadraticCurveTo(x, y, x + radius[0], y);
+    this.closePath();
+  };
+}
+
+// Generate icons on page load
+window.addEventListener('load', displayIcons);
+</script>
+
+</body>
+</html>
